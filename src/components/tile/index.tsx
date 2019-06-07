@@ -27,6 +27,8 @@ const Tile: React.FC <TileProps> = ({ data }) => {
     let card: ValidCard = data.objects[0];
     if (isMovable(card)) {
       console.log(card.getMovable());
+    } else {
+      console.log(`This card can't move`);
     }
   }
 
