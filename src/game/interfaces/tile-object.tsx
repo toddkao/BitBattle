@@ -4,8 +4,8 @@ export default interface TileObject extends Point {
   readonly tileImage: string;
   readonly tileColor: string;
 
-  getMovable(): Point[];
-  move(p: Point): void;
+  getMovable?(): Point[];
+  move?(p: Point): void;
 }
 
 // class xyz implements TileObject {
@@ -20,7 +20,7 @@ export default interface TileObject extends Point {
 //   get tileImage(): string {
 //     return '..';
 //   }
-  
+
 //   get tileColor(): string {
 //     return 'abc';
 //   }

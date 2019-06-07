@@ -1,7 +1,7 @@
 import TileObject from "../interfaces/tile-object";
 import Point from "../interfaces/point";
 
-export default class DeadTile implements TileObject {
+export default class PlayerCard implements TileObject {
   x: number;
   y: number;
 

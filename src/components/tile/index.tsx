@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import GameContext from '../../context/game';
+import './tile.scss';
 
 import TileInstace from '../../game/tile';
 
-import './tile.scss';
+import { MovableCard } from '../../game/types/movable-card';
+import { ValidCard } from '../../game/types/valid-card';
 
 interface TileProps {
   data: TileInstace;
@@ -17,8 +19,19 @@ const Tile: React.FC <TileProps> = ({ data }) => {
     height: ctx.cellSize + 'px',
     backgroundImage: `url(${data.tileImage})`
   }
+
+  const isMovable = (card: ValidCard): card is MovableCard => {
+    if((card as MovableCard)){
+      return true
+    }
+    return false
+  }
+
   const showMovable = () => {
-    console.log(data.objects[0].getMovable());
+    let card: ValidCard = data.objects[0];
+    if (isMovable(card)) {
+      console.log(card.getMovable());
+    }
   }
 
   return (

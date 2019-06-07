@@ -1,7 +1,6 @@
 import TileObject from "../interfaces/tile-object";
-import Point from "../interfaces/point";
 
-export default class DeadTile implements TileObject {
+export default class GrassCard implements TileObject {
   x: number;
   y: number;
 
@@ -17,10 +16,4 @@ export default class DeadTile implements TileObject {
   get tileColor(): string {
     return 'abc';
   }
-
-  getMovable(): Point[] {
-    return [];
-  }
-
-  move(): void {}
 }
