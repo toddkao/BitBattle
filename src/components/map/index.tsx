@@ -12,14 +12,9 @@ const Map: React.FC = () => {
   const game = new Game(width, height);
   game.importBoard('PGGGGGDGGDDGGDDP');
 
-  const mapStyle = {
-    width: ctx.cellSize * width + 'px',
-    height: ctx.cellSize * height + 'px',
-  }
-
   return (
     <div className="MapContainer">
-      <div className="Map" style={mapStyle}>
+      <div className="Map">
         {
           game.tiles.map(tile => {
             return (

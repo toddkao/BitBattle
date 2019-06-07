@@ -15,9 +15,7 @@ const Tile: React.FC <TileProps> = ({ data }) => {
   const ctx = useContext(GameContext);
 
   const tileStyle = {
-    width: ctx.cellSize + 'px',
-    height: ctx.cellSize + 'px',
-    backgroundImage: `url(${data.tileImage})`
+    backgroundImage: `url(${data.tileImage})`,
   }
 
   const isMovable = (card: ValidCard): card is MovableCard => {
