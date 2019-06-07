@@ -21,6 +21,7 @@ export default class Tile implements Point {
     if (this.objects.length > 0) {
       return this.objects[0].tileImage;
     }
-    return '...'; // default of nothing on it
+     // default image
+    return 'http://4.bp.blogspot.com/-a135QAgRRqc/ToXUbysPglI/AAAAAAAAAE4/ejvSKIXXtbc/s1600/Grass_8bit_32px.jpg';
   }
 }
