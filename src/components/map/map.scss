@@ -1,12 +1,18 @@
 .MapContainer {
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // flex-wrap: wrap;
-  // height: 100vh;
+  display: grid;
+  grid-template-areas:
+    "tl tm tr"
+    "ml mm mr"
+    "bl bm br"
+  ;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  height: 100vh;
+  width: 100vw;
 }
 
 .Map {
+  grid-area: mm;
   border: 2px solid black;
   box-sizing: content-box;
   display: flex;
