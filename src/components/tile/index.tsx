@@ -34,7 +34,7 @@ const Tile: React.FC <TileProps> = ({ data }) => {
 
   return (
     <div className="Tile" onClick={showMovable} style={tileStyle}>
-      <div> ({ data.x }, {data.y}) </div>
+      {/* <div> ({ data.x }, {data.y}) </div> */}
     </div>
   );
 }

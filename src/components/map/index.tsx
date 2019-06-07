@@ -4,14 +4,19 @@ import Tile from '../tile';
 import './map.scss';
 
 const Map: React.FC = () => {
-  const width = 4;
-  const height = 4;
+  const width = 10;
+  const height = 10;
   const game = new Game(width, height);
-  game.importBoard('PGGGGGDGGDDGGDDP');
+  // game.importBoard('PGGGGGDGGDDGGDDP');
+
+  const mapStyles = {
+    gridTemplateColumns: `repeat(${width}, 1fr)`,
+    gridTemplateRows: `repeat(${height}, 1fr)`,
+  }
 
   return (
     <div className="MapContainer">
-      <div className="Map">
+      <div className="Map" style={mapStyles}>
         {
           game.tiles.map(tile => {
             return (
