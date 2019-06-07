@@ -12,7 +12,6 @@ interface TileProps {
 const Tile: React.FC <TileProps> = ({ data }) => {
   const ctx = useContext(GameContext);
 
-  console.log(data);
   const tileStyle = {
     width: ctx.cellSize + 'px',
     height: ctx.cellSize + 'px',
