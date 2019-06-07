@@ -1,9 +1,10 @@
 import Tile from './tile';
 import Point from './interfaces/point';
 
-import BrickTile from './tiles/brick-tile';
-import PlayerTile from './tiles/player-tile';
-import GrassTile from './tiles/grass-tile';
+import BrickCard from './cards/brick-card';
+import PlayerCard from './cards/player-card';
+import GrassCard from './cards/grass-card';
+import { ValidCard } from './types/valid-card';
 
 export default class Map {
   tiles: Tile[];
@@ -48,18 +49,15 @@ export default class Map {
       let y = Math.floor(i / this.width);
       const tile = new Tile(x, y);
 
-      let t;
-      if (b[i] === 'D') {
-        t = new BrickTile(x, y);
-        tile.objects.push(t)
-      } else if (b[i] === 'G') {
-        t = new GrassTile(x, y);
-        tile.objects.push(t)
+      let card: ValidCard;
+      if (b[i] === 'G') {
+        card = new GrassCard(x, y);
       } else if (b[i] === 'P') {
-        t = new PlayerTile(x, y);
-        tile.objects.push(t)
+        card = new PlayerCard(x, y);
+      } else {
+        card = new BrickCard(x, y);
       }
-
+      tile.objects.push(card);
 
       this.setTile(tile, { x, y });
     }

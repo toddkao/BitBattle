@@ -1,10 +1,10 @@
 import Point from './interfaces/point';
-import TileObject from './interfaces/tile-object';
+import { ValidCard } from './types/valid-card';
 
 export default class Tile implements Point {
   x: number;
   y: number;
-  objects: TileObject[];
+  objects: ValidCard[];
 
   constructor(x : number, y: number) {
     this.x = x;
@@ -12,7 +12,7 @@ export default class Tile implements Point {
     this.objects = [];
   }
 
-  moveTo(o : TileObject) : void {
+  moveTo(o: ValidCard) : void {
     this.objects.push(o);
     o.move(this);
   }
