@@ -5,6 +5,7 @@ import TileInstace from '../../game/tile';
 
 import { MovableCard } from '../../game/types/movable-card';
 import { ValidCard } from '../../game/types/valid-card';
+import PlayerCard from '../../game/cards/player-card';
 
 interface TileProps {
   data: TileInstace;
@@ -16,7 +17,7 @@ const Tile: React.FC <TileProps> = ({ data }) => {
   }
 
   const isMovable = (card: ValidCard): card is MovableCard => {
-    if((card as MovableCard)){
+    if(card instanceof PlayerCard){
       return true
     }
     return false
