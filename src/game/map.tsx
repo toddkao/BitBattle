@@ -12,8 +12,8 @@ export default class Map {
     this.height = height;
     
     for (let i = 0; i < this.width * this.height; i++) {
-      let x = Math.floor(i / this.width);
-      let y = i % this.width;
+      let x = i % this.width;
+      let y = Math.floor(i / this.width);
       this.setTile(new Tile(x, y), { x, y });
     }
   }
@@ -40,10 +40,10 @@ export default class Map {
     console.log(b);
     if (b.length !== this.tiles.length) throw new Error(`Imported Board doesn't match dimensions of map`)
     for (let i = 0; i < b.length; i++) {
-      let x = Math.floor(i / this.width);
-      let y = i % this.width;
+      let x = i % this.width;
+      let y = Math.floor(i / this.width);
       const tile = new Tile(x, y);
-      
+
       let tileImageMap :any = {
         'D': 'http://bbp.style/PUBLIC/BIM-library/jpg/australmasonry/GreyBlock/AM-MasonryBlocks-GreyBlock90x190x390-NAT.jpg',
         'G': 'http://4.bp.blogspot.com/-a135QAgRRqc/ToXUbysPglI/AAAAAAAAAE4/ejvSKIXXtbc/s1600/Grass_8bit_32px.jpg',
