@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import GameContext from '../../context/game';
+import React from 'react';
 import './tile.scss';
 
 import TileInstace from '../../game/tile';
@@ -12,8 +11,6 @@ interface TileProps {
 }
 
 const Tile: React.FC <TileProps> = ({ data }) => {
-  const ctx = useContext(GameContext);
-
   const tileStyle = {
     backgroundImage: `url(${data.tileImage})`,
   }

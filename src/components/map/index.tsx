@@ -1,12 +1,9 @@
-import React, { useContext } from 'react';
-import GameContext from '../../context/game';
+import React from 'react';
 import Game from '../../game/map';
 import Tile from '../tile';
 import './map.scss';
 
 const Map: React.FC = () => {
-  const ctx = useContext(GameContext);
-
   const width = 4;
   const height = 4;
   const game = new Game(width, height);
