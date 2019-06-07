@@ -22,6 +22,6 @@ export default class Tile implements Point {
       return this.objects[0].tileImage;
     }
      // default image
-    return 'http://4.bp.blogspot.com/-a135QAgRRqc/ToXUbysPglI/AAAAAAAAAE4/ejvSKIXXtbc/s1600/Grass_8bit_32px.jpg';
+    return undefined;
   }
 }

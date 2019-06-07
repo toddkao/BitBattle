@@ -16,7 +16,7 @@ const Tile: React.FC <TileProps> = ({ data }) => {
   const tileStyle = {
     width: ctx.cellSize + 'px',
     height: ctx.cellSize + 'px',
-    background: `url(${data.tileImage})`
+    backgroundImage: `url(${data.tileImage})`
   }
 
   return (
