@@ -10,7 +10,7 @@ const Map: React.FC = () => {
   const width = 4;
   const height = 4;
   const game = new Game(width, height);
-  game.importBoard('GGGGGGDGGDDGGDDL')
+  game.importBoard('PGGGGGDGGDDGGDDP');
 
   const mapStyle = {
     width: ctx.cellSize * width + 'px',

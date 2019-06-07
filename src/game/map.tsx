@@ -1,16 +1,20 @@
 import Tile from './tile';
 import Point from './interfaces/point';
 
+import BrickTile from './tiles/brick-tile';
+import PlayerTile from './tiles/player-tile';
+import GrassTile from './tiles/grass-tile';
+
 export default class Map {
   tiles: Tile[];
   width: number;
   height: number;
-  
+
   constructor(width : number, height : number) {
     this.tiles = new Array(width * height);
     this.width = width;
     this.height = height;
-    
+
     for (let i = 0; i < this.width * this.height; i++) {
       let x = i % this.width;
       let y = Math.floor(i / this.width);
@@ -44,26 +48,19 @@ export default class Map {
       let y = Math.floor(i / this.width);
       const tile = new Tile(x, y);
 
-      let tileImageMap :any = {
-        'D': 'http://bbp.style/PUBLIC/BIM-library/jpg/australmasonry/GreyBlock/AM-MasonryBlocks-GreyBlock90x190x390-NAT.jpg',
-        'G': 'http://4.bp.blogspot.com/-a135QAgRRqc/ToXUbysPglI/AAAAAAAAAE4/ejvSKIXXtbc/s1600/Grass_8bit_32px.jpg',
-        'L': 'https://cognigen-cellular.com/images/mario-clipart-sprite.png',
+      let t;
+      if (b[i] === 'D') {
+        t = new BrickTile(x, y);
+        tile.objects.push(t)
+      } else if (b[i] === 'G') {
+        t = new GrassTile(x, y);
+        tile.objects.push(t)
+      } else if (b[i] === 'P') {
+        t = new PlayerTile(x, y);
+        tile.objects.push(t)
       }
 
-      let movable: Point[] = [
-        {x: 0, y: 1}
-      ];
 
-      let obj = {
-        tileImage: tileImageMap[b[i]],
-        tileColor: '',
-        getMovable: () => movable,
-        getTile: '',
-        move: () => '',
-        x,
-        y,
-      }
-      tile.objects.push(obj)
       this.setTile(tile, { x, y });
     }
   }

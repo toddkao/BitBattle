@@ -17,9 +17,12 @@ const Tile: React.FC <TileProps> = ({ data }) => {
     height: ctx.cellSize + 'px',
     backgroundImage: `url(${data.tileImage})`
   }
+  const showMovable = () => {
+    console.log(data.objects[0].getMovable());
+  }
 
   return (
-    <div className="Tile" style={tileStyle}>
+    <div className="Tile" onClick={showMovable} style={tileStyle}>
       <div> ({ data.x }, {data.y}) </div>
     </div>
   );
