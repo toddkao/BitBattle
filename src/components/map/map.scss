@@ -1,0 +1,14 @@
+.MapContainer {
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  // flex-wrap: wrap;
+  // height: 100vh;
+}
+
+.Map {
+  border: 2px solid black;
+  box-sizing: content-box;
+  display: flex;
+  flex-wrap: wrap;
+}
