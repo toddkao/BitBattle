@@ -4,62 +4,92 @@ import Point from './interfaces/point';
 import BrickCard from './cards/brick-card';
 import PlayerCard from './cards/player-card';
 import GrassCard from './cards/grass-card';
-import { ValidCard } from './types/valid-card';
+import Board from './board';
+import TileObject from './interfaces/tile-object';
+import AttackDogCard from './cards/attack-dog-card';
 
 export default class Map {
   tiles: Tile[];
   width: number;
   height: number;
+  nextId: number;
 
-  constructor(width : number, height : number) {
-    this.tiles = new Array(width * height);
-    this.width = width;
-    this.height = height;
+  constructor(b: Board) {
+    this.nextId = 1;
+    const cards = [
+      GrassCard,
+      PlayerCard,
+      BrickCard,
+      AttackDogCard,
+    ]
 
-    for (let i = 0; i < this.width * this.height; i++) {
+    if (!b.tiles.every(t => t.length === b.tiles[0].length)) throw new Error('Invalid board tiles');
+    if (!Object.values(b.mapping).every(m => cards.find(c => c.name === m))) throw new Error('Invalid card type');
+
+    this.width = b.tiles[0].replace(/ /g, '').length;
+    this.height = b.tiles.length;
+    let tiles = new Array(this.width * this.height);
+    this.tiles = tiles;
+
+    console.log(this.width, this.height);
+    const DefaultCardType = cards.find(c => c.name == b.mapping['*']);
+    if (!DefaultCardType) throw new Error(`Default card type is unspecified`);
+
+    const tilesString = b.tiles.join('').replace(/ /g, '');
+
+    for (let i = 0; i < tilesString.length; i++) {
       let x = i % this.width;
       let y = Math.floor(i / this.width);
-      this.setTile(new Tile(x, y), { x, y });
+      let short = tilesString.charAt(i);
+
+      const tile = new Tile(x, y);
+      tile.objects.push(new DefaultCardType(x, y, this.nextId++));
+
+      if (short != '*') {
+        const CardType = cards.find(c => c.name === b.mapping[short]);
+        if (!CardType) throw new Error(`Unknown card type ${short}} - ${b.mapping[short]}`);
+        const card = new CardType(x, y, this.nextId++);
+        tile.objects.push(card);
+      }
+
+      this.setTile(tile, { x, y });
     }
   }
 
-  private tilePointToIndex(p : Point) : number {
-    if (p.x < 0) throw new Error('X must be greater than zero');
-    if (p.y < 0) throw new Error('Y must be greater than zero');
-    if (p.x >= this.width) throw new Error('X is out of bounds');
-    if (p.y >= this.height) throw new Error('Y is out of bounds');
+  isValidPoint(p: Point): boolean {
+    if (p.x < 0) return false; //throw new Error('X must be greater than zero');
+    if (p.y < 0) return false; //throw new Error('Y must be greater than zero');
+    if (p.x >= this.width) return false; //throw new Error('X is out of bounds');
+    if (p.y >= this.height) return false; //throw new Error('Y is out of bounds');
+    return true;
+  }
+
+  isOverlappable(p: Point) : boolean {
+    const tile = this.getTile(p);
+    if (tile.objects.some(o => !o.isOverlappable || o.isEnemy)) return false;
+    return true;
+  }
+
+  private tilePointToIndex(p: Point): number {
+    if (!this.isValidPoint(p)) throw new Error(`Point(${p.x}, ${p.y}) is out of bounds`);
     return (p.y * this.width) + p.x;
+  }
+
+  move(o: TileObject, p: Point) {
+    this.getTile(o).removeCard(o.id);
+    this.getTile(p).addCard(o);
+    
+    if (o.move) o.move(p);
+    return this.tiles;
   }
 
   getTile(p: Point) {
     return this.tiles[this.tilePointToIndex(p)];
   }
 
-  setTile(t : Tile, p: Point) {
+  setTile(t: Tile, p: Point) {
     t.x = p.x;
     t.y = p.y;
     this.tiles[this.tilePointToIndex(p)] = t;
-  }
-
-  importBoard(b: string) {
-    console.log(b);
-    if (b.length !== this.tiles.length) throw new Error(`Imported Board doesn't match dimensions of map`)
-    for (let i = 0; i < b.length; i++) {
-      let x = i % this.width;
-      let y = Math.floor(i / this.width);
-      const tile = new Tile(x, y);
-
-      let card: ValidCard;
-      if (b[i] === 'G') {
-        card = new GrassCard(x, y);
-      } else if (b[i] === 'P') {
-        card = new PlayerCard(x, y);
-      } else {
-        card = new BrickCard(x, y);
-      }
-      tile.objects.push(card);
-
-      this.setTile(tile, { x, y });
-    }
   }
 }

@@ -1,7 +1,7 @@
 import TileObject from "../interfaces/tile-object";
 import Point from "../interfaces/point";
 
-export default class PlayerCard implements TileObject {
+export default class AttackDogCard implements TileObject {
   x: number;
   y: number;
   id: number;
@@ -13,10 +13,10 @@ export default class PlayerCard implements TileObject {
   }
 
   get isOverlappable(): boolean { return true; }
-  get isEnemy(): boolean { return false; }
+  get isEnemy(): boolean { return true; }
 
   get tileImage(): string {
-    return 'assets/img/Spybotics_Guard_Pup.webp';
+    return 'assets/img/Spybotics_Attack_Dog.webp';
   }
 
   get tileColor(): string {

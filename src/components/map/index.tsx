@@ -1,33 +1,86 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Game from '../../game/map';
 import Tile from '../tile';
+import Board from '../../game/board';
 import './map.scss';
+import TileObject from '../../game/interfaces/tile-object';
+import Point from '../../game/interfaces/point';
 
+const boardImport = {
+  "tiles": [
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * G G * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * P * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * G G * * * * * * * * * *",
+    "* * E * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+    "* * * * * * * * * * * * * * * *",
+  ],
+  "mapping": {
+    "*": "BrickCard",
+    "G": "GrassCard",
+    "P": "PlayerCard",
+    "E": "AttackDogCard"
+  }
+}
+
+const g = new Game(boardImport)
 const Map: React.FC = () => {
-  const width = 10;
-  const height = 10;
-  const game = new Game(width, height);
+  const [selectedCard, updateSelectedCard] = useState();
+  const [tilesMovableTo, updateTilesMovableTo] = useState();
+  const [game, updateGame] = useState(g);
 
-  function getRandomInt(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+  const clearState = () => {
+    updateSelectedCard(undefined);
+    updateTilesMovableTo(undefined);
   }
 
-  let boardCards: any = {
-    0: 'P',
-    1: 'G',
-    2: 'D'
+  const rightClick = (e: Event, tile: TileObject) => {
+    console.log('right clicked')
+    e.preventDefault();
+    if (selectedCard) clearState();
   }
-  let randomBoard = '';
-  for (let i = 0; i < width * height; i++) {
-    let r = getRandomInt(0, 2);
-    randomBoard += boardCards[r];
+
+  const leftClick = (e: Event, tile: TileObject) => {
+    // If we have a tile selected, and the new tile we're selecting is a movable tile,
+    // then we're trying to move our selected tile to the new tile
+    if (selectedCard && tilesMovableTo && tilesMovableTo.some((t: Point) => t.x == tile.x && t.y == tile.y)) {
+      console.log(`before ${selectedCard.x} ${selectedCard.y}`);
+      console.log(selectedCard.id)
+      game.move(selectedCard, tile);
+      clearState();
+      console.log(`after ${selectedCard.x} ${selectedCard.y}`);
+    } else if (!isSelected(tile) && tile.getMovable && !tile.isEnemy) {
+      updateSelectedCard(tile);
+      updateTilesMovableTo(tile.getMovable().filter(p => game.isOverlappable(p)));
+      console.log(tilesMovableTo);
+    }
   }
-  console.log(randomBoard.length);
-  game.importBoard(randomBoard);
+
+  const isSelected = (tile: TileObject) => {
+    if (!selectedCard) return false;
+    if (tile.id === selectedCard.id) return true;
+    else return false;
+  }
+
+  const isMovableTo = (tile: TileObject) => {
+    if (!tilesMovableTo) return false;
+    if (tilesMovableTo.some((t: Point) => t.x == tile.x && t.y == tile.y)) return true;
+    return false;
+  }
 
   const mapStyles = {
-    gridTemplateColumns: `repeat(${width}, 1fr)`,
-    gridTemplateRows: `repeat(${height}, 1fr)`,
+    gridTemplateColumns: `repeat(${game.width}, 1fr)`,
+    gridTemplateRows: `repeat(${game.height}, 1fr)`,
   }
 
   return (
@@ -37,7 +90,12 @@ const Map: React.FC = () => {
           game.tiles.map(tile => {
             return (
               <Tile
-                key={`tile-${tile.x}-${tile.y}`}
+                leftClickHandler={leftClick}
+                rightClickHandler={rightClick}
+                tilesMovableTo={isMovableTo(tile.top())}
+                selected={isSelected(tile.top())}
+                topCard={tile.top()}
+                key={`tile-${tile.x}-${tile.y}-${tile.top().id}`}
                 data={tile}
               />
             )

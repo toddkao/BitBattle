@@ -1,36 +1,14 @@
 import Point from './point';
 
 export default interface TileObject extends Point {
+  readonly id: number;
   readonly tileImage: string;
   readonly tileColor: string;
+  readonly isOverlappable: boolean;
+  readonly isEnemy: boolean;
 
   getMovable?(): Point[];
   move?(p: Point): void;
+
+  getInteractable?(): Point[];
 }
-
-// class xyz implements TileObject {
-//   x: number;
-//   y: number;
-
-//   constructor() {
-//     this.x = 0;
-//     this.y = 0;
-//   }
-
-//   get tileImage(): string {
-//     return '..';
-//   }
-
-//   get tileColor(): string {
-//     return 'abc';
-//   }
-
-//   getMovable(): Point[] {
-//     return [];
-//   }
-
-//   move(p: Point): void {
-//     this.x = p.x;
-//     this.y = p.y;
-//   }
-// }

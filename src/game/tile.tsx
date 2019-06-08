@@ -1,11 +1,12 @@
 import Point from './interfaces/point';
 import { ValidCard } from './types/valid-card';
 import { MovableCard } from './types/movable-card';
+import TileObject from './interfaces/tile-object';
 
 export default class Tile implements Point {
   x: number;
   y: number;
-  objects: ValidCard[];
+  objects: TileObject[];
 
   constructor(x : number, y: number) {
     this.x = x;
@@ -13,16 +14,25 @@ export default class Tile implements Point {
     this.objects = [];
   }
 
-  moveTo(o: MovableCard) : void {
+  top() : TileObject {
+    if (this.objects.length == 0) throw new Error('Tile unexpectedly has no objects');
+    return this.objects[this.objects.length - 1];
+  }
+
+  removeCard(id: number) {
+    const i : number = this.objects.findIndex(o => o.id == id);
+    if (i > -1) {
+      this.objects.splice(i, 1);
+    }
+  }
+
+  addCard(o: TileObject) : void {
+    if (this.objects.find(obj => obj.id == o.id)) return;
+
     this.objects.push(o);
-    o.move(this);
   }
 
   get tileImage() {
-    if (this.objects.length > 0) {
-      return this.objects[0].tileImage;
-    }
-     // default image
-    return undefined;
+    return this.top().tileImage;
   }
 }
