@@ -2,14 +2,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
+  height: -webkit-fill-available;
 }
 
 .Map {
-  width: 80vmin;
-  height: 80vmin;
-  border: 2px solid black;
+  width: 100vmin;
+  height: 100vmin;
+  min-height: 250px;
+  min-width: 250px;
+  border: 1px solid black;
+  box-sizing: border-box;
   display: grid;
   grid-gap: 0;
 }

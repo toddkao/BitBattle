@@ -14,9 +14,15 @@ export default class Tile implements Point {
     this.objects = [];
   }
 
-  top() : TileObject {
+  top() : TileObject | undefined {
+    if (!this.objects) return undefined;
     if (this.objects.length == 0) throw new Error('Tile unexpectedly has no objects');
     return this.objects[this.objects.length - 1];
+  }
+
+  topId() : number {
+    const t = this.top();
+    return t ? t.id : 0;
   }
 
   removeCard(id: number) {
@@ -32,7 +38,8 @@ export default class Tile implements Point {
     this.objects.push(o);
   }
 
-  get tileImage() {
-    return this.top().tileImage;
+  get tileImage() : string {
+    const t = this.top();
+    return t && t.tileImage ? t.tileImage : '';
   }
 }

@@ -9,7 +9,7 @@ interface TileProps {
   tilesMovableTo: boolean;
   leftClickHandler: Function;
   rightClickHandler: Function;
-  topCard: TileObject;
+  topCard: TileObject | undefined;
 }
 
 const Tile: React.FC<TileProps> = ({
@@ -20,12 +20,22 @@ const Tile: React.FC<TileProps> = ({
   tilesMovableTo,
   topCard
 }) => {
-  const [topCardStyle, updateTopCard] = useState({
-    backgroundImage: `url(${topCard.tileImage})`
-  });
+  const backgroundImageOrColor = () => {
+    if (!topCard) { return {backgroundColor: ''} }
+    if (topCard.tileImage) {
+      return {
+        backgroundImage: `url(${topCard.tileImage})`
+      }
+    } else {
+      return {
+        backgroundColor: topCard.tileColor
+      }
+    }
+  }
+  const [topCardStyle, updateTopCard] = useState(backgroundImageOrColor());
 
   const tileClass = () => {
-    return `Tile ${selected ? 'Selected' : ''} ${tilesMovableTo ? 'MovableTo' : ''} ${data.top().isEnemy ? 'Enemy' : ''}`;
+    return `Tile ${selected ? 'Selected' : ''} ${tilesMovableTo ? 'MovableTo' : ''} ${topCard && topCard.isEnemy ? 'Enemy' : ''}`;
   }
 
   return (

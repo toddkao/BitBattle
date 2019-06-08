@@ -76,11 +76,10 @@ export default class Map {
   }
 
   move(o: TileObject, p: Point) {
+    p = { x: p.x, y: p.y };
     this.getTile(o).removeCard(o.id);
+    if (o.move) o.move(this, p);
     this.getTile(p).addCard(o);
-    
-    if (o.move) o.move(p);
-    return this.tiles;
   }
 
   getTile(p: Point) {

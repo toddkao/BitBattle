@@ -54,11 +54,13 @@ const Map: React.FC = () => {
     // If we have a tile selected, and the new tile we're selecting is a movable tile,
     // then we're trying to move our selected tile to the new tile
     if (selectedCard && tilesMovableTo && tilesMovableTo.some((t: Point) => t.x == tile.x && t.y == tile.y)) {
-      console.log(`before ${selectedCard.x} ${selectedCard.y}`);
-      console.log(selectedCard.id)
+
+      console.log(selectedCard.id + ' ' + selectedCard.x + ' ' + selectedCard.y);
       game.move(selectedCard, tile);
       clearState();
-      console.log(`after ${selectedCard.x} ${selectedCard.y}`);
+
+      console.log(selectedCard.id + ' ' + selectedCard.x + ' ' + selectedCard.y);
+
     } else if (!isSelected(tile) && tile.getMovable && !tile.isEnemy) {
       updateSelectedCard(tile);
       updateTilesMovableTo(tile.getMovable().filter(p => game.isOverlappable(p)));
@@ -66,13 +68,15 @@ const Map: React.FC = () => {
     }
   }
 
-  const isSelected = (tile: TileObject) => {
+  const isSelected = (tile: TileObject | undefined) => {
+    if (!tile) return false;
     if (!selectedCard) return false;
     if (tile.id === selectedCard.id) return true;
     else return false;
   }
 
-  const isMovableTo = (tile: TileObject) => {
+  const isMovableTo = (tile: TileObject | undefined) => {
+    if (!tile) return false;
     if (!tilesMovableTo) return false;
     if (tilesMovableTo.some((t: Point) => t.x == tile.x && t.y == tile.y)) return true;
     return false;
@@ -95,7 +99,7 @@ const Map: React.FC = () => {
                 tilesMovableTo={isMovableTo(tile.top())}
                 selected={isSelected(tile.top())}
                 topCard={tile.top()}
-                key={`tile-${tile.x}-${tile.y}-${tile.top().id}`}
+                key={`tile-${tile.x}-${tile.y}-${tile.topId()}`}
                 data={tile}
               />
             )
