@@ -1,34 +1,26 @@
 import TileObject from "../interfaces/tile-object";
 import Point from "../interfaces/point";
 import Map from "../map";
+import EntityObject from "./entity-object";
 
-export default class HealthCard implements TileObject {
-  x: number;
-  y: number;
-  id: number;
-  health: number;
-  parent: TileObject;
+export default class HealthCard extends EntityObject {
+  parent: EntityObject;
 
-  constructor(x: number, y: number, id: number, parent: TileObject) {
-    this.x = x;
-    this.y = y;
-    this.id = id;
+  constructor(x: number, y: number, id: number, parent: EntityObject) {
+    super(x, y, id);
+    this._maxCells = 1;
+    this._maxHealthPerCell = parent.maxHealthPerCell;
+    this.tileColor = parent.tileColor;
+    this.attackDamage = 0;
     this.parent = parent;
-    this.health = this.parent.maxHealthPerCell;
   }
 
-  get maxCells() { return 0; }
-  get maxHealthPerCell() { return 0; }
-
-  get isOverlappable(): boolean { return  true; }
-  get isEnemy(): boolean { return this.parent.isEnemy; }
-
-  get tileColor(): string {
-    return this.parent.tileColor;
+  getHealthCard() {
+    return this.parent.getHealthCard();
   }
 
-  move(g: Map, p: Point): void {
-    this.x = p.x;
-    this.y = p.y;
+  isOverlappable(t: TileObject): boolean {
+    if (t.id == this.parent.id) return true;
+    return false;
   }
 }

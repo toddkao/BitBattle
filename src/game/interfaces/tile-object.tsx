@@ -1,22 +1,15 @@
 import Point from './point';
 import Map from "../map";
+import { TileObjectType } from "../types/tile-object-type";
 
 export default interface TileObject extends Point {
   readonly id: number;
-  readonly tileImage?: string;
-  readonly tileColor: string;
-  readonly isOverlappable: boolean;
-  readonly isEnemy: boolean;
-
-  readonly maxHealthPerCell: number;
-  readonly maxCells: number;
   readonly health: number;
-  readonly children?: TileObject[];
+  readonly tileImage?: string;
+  readonly objectType: TileObjectType;
+
+  isOverlappable(t: TileObject): boolean;
 
   getMovable?(): Point[];
-  move?(g: Map, p: Point): void;
-
   getInteractable?(): Point[];
-
-  getHealthCard?(): TileObject;
 }

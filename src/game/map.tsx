@@ -6,7 +6,10 @@ import PlayerCard from './cards/player-card';
 import GrassCard from './cards/grass-card';
 import Board from './board';
 import TileObject from './interfaces/tile-object';
+import EntityObject from './cards/entity-object';
 import AttackDogCard from './cards/attack-dog-card';
+import { TileObjectType } from './types/tile-object-type';
+import helpers from '../helpers';
 
 export default class Map {
   tiles: Tile[];
@@ -31,7 +34,6 @@ export default class Map {
     let tiles = new Array(this.width * this.height);
     this.tiles = tiles;
 
-    console.log(this.width, this.height);
     const DefaultCardType = cards.find(c => c.name == b.mapping['*']);
     if (!DefaultCardType) throw new Error(`Default card type is unspecified`);
 
@@ -49,6 +51,16 @@ export default class Map {
         const CardType = cards.find(c => c.name === b.mapping[short]);
         if (!CardType) throw new Error(`Unknown card type ${short}} - ${b.mapping[short]}`);
         const card = new CardType(x, y, this.nextId++);
+
+        if (card.objectType == TileObjectType.Entity) {
+          const entity = card as EntityObject;
+          entity.health = entity.maxHealthPerCell;
+
+          if (short != 'P') { // temp
+            entity.isEnemy = true;
+          }
+        }
+
         tile.objects.push(card);
       }
 
@@ -64,9 +76,9 @@ export default class Map {
     return true;
   }
 
-  isOverlappable(p: Point) : boolean {
+  isOverlappable(t: TileObject, p: Point) : boolean {
     const tile = this.getTile(p);
-    if (tile.objects.some(o => !o.isOverlappable || o.isEnemy)) return false;
+    if (tile.objects.some(o => !o.isOverlappable(t) || helpers.isEnemy(o))) return false;
     return true;
   }
 
@@ -75,11 +87,44 @@ export default class Map {
     return (p.y * this.width) + p.x;
   }
 
-  move(o: TileObject, p: Point) {
+  move(o: EntityObject, p: Point) {
     p = { x: p.x, y: p.y };
     this.getTile(o).removeCard(o.id);
-    if (o.move) o.move(this, p);
+    o.move(this, p);
     this.getTile(p).addCard(o);
+  }
+
+  interact(interacter: TileObject, interactee: TileObject) {
+    // assume attacking for now...
+    if (interacter.objectType == TileObjectType.Entity) {
+      if (interactee.objectType == TileObjectType.Entity) {
+        this.attack(interacter as EntityObject, interactee as EntityObject);
+      }
+      // ...
+    }
+  }
+
+  removeCard(t: TileObject) {
+    this.getTile(t).removeCard(t.id);
+  }
+
+  private attack(attacker: EntityObject, defender: EntityObject) {
+    let damage = attacker.attackDamage;
+    let defenderCell = defender.getHealthCard();
+    while (damage > 0) {
+      let hit = Math.min(damage, defenderCell.health);
+      defenderCell.health -= hit;
+      damage -= hit;
+
+      if (defenderCell.health == 0) { // we killed this cell
+        this.removeCard(defenderCell);
+        
+        if (defenderCell.id != defender.id) {
+          defender.removeChild(defenderCell.id);
+          defenderCell = defender.getHealthCard();
+        }
+      }
+    }
   }
 
   getTile(p: Point) {

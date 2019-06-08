@@ -15,3 +15,22 @@
   display: grid;
   grid-gap: 0;
 }
+
+.Menu {
+  display: grid;
+  position: absolute;
+  left: 100%;
+  top: -2px;
+  z-index: 1;
+  width: calc(400% + 6px);
+  height: calc(400% + 6px);
+  background-color: white;
+  border: 2px solid black;
+  overflow: auto;
+}
+
+.MenuItem {
+  width: 100%;
+  border: 2px solid black;
+  box-sizing: border-box;
+}
