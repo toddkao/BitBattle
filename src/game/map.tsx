@@ -64,6 +64,10 @@ export default class Map {
     }
   }
 
+  isTerrain(p: Point) : boolean {
+    return this.getTile(p).objects.some(t => t.objectType == CardObjectType.Terrain);
+  }
+
   isValidPoint(p: Point): boolean {
     if (p.x < 0) return false; //throw new Error('X must be greater than zero');
     if (p.y < 0) return false; //throw new Error('Y must be greater than zero');

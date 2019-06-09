@@ -11,14 +11,16 @@ import PlayerCard from '../../game/cards/utility/player-card';
 import Tile from '../tile';
 import ChooseCardMenu from '../menus/choose-card-menu';
 import ContextMenu from '../menus/context-menu';
+import Path from '../../game/path';
+import { Grid, Navigator, NavigatorTile } from 'pulsar-pathfinding';
 
 const boardImport = {
   "comment": "https://www.youtube.com/watch?v=HNJA0wfbGfE&list=PL56CE84F6287C82A8&index=10",
   "tiles": [
-    "XX XX XX XX XX XX XX XX XX XX XX XX XX PP",
+    "XX XX XX XX XX XX XX XX XX XX XX XX XX XX",
     "AP XX AP XX XX XX XX XX XX XX XX XX XX XX",
     "XX S1 XX XX XX XX XX XX XX PP XX XX XX XX",
-    "XX XX XX S1 XX XX XX XX XX XX XX PP XX XX",
+    "XX XX XX S1 XX XX XX XX XX XX XX XX XX XX",
     "OO XX WM XX XX XX XX XX XX XX XX XX XX XX",
     "OO OO XX AP XX XX XX XX XX XX XX XX XX XX",
     "OO OO XX S1 XX S1 XX XX XX XX XX XX XX XX",
@@ -44,6 +46,7 @@ const Map: React.FC = () => {
   const [tilesMovableTo, updateTilesMovableTo] = useState();
   const [tilesInteractableTo, updateTilesInteractableTo] = useState();
   const [contextMenu, updateContextMenu] = useState();
+  const [tilesInPath, updateTilesInPath] = useState();
 
   const [game] = useState(g);
 
@@ -110,6 +113,13 @@ const Map: React.FC = () => {
     return false;
   }
 
+  const isPartOfPath = (card: CardObject | undefined) => {
+    if (!card) return false;
+    if (!tilesInPath) return false;
+    if (tilesInPath.some((t: Point) => t.x === card.x && t.y === card.y)) return true;
+    return false;
+  }
+
   const isInteractableTo = (card: CardObject | undefined) => {
     if (!tilesInteractableTo) return InteractionType.None;
     if (!card) return InteractionType.None;
@@ -145,6 +155,40 @@ const Map: React.FC = () => {
     height: `${game.height / maxDimension() * 100}vmin`,
   }
 
+  const getPath = () => {
+    const grid: Grid = new Grid({width: game.width, height: game.height});
+    grid.makeGrid();
+    for (let y = 0; y < game.height; y++) {
+      for (let x = 0; x < game.width; x++) {
+        if (!game.isOverlappable(selectedCard, {x, y})) {
+          // @ts-ignore
+          let gg = grid.findTile({x, y});
+          if (gg) grid.obstacles.add(gg);
+        }
+      }
+    }
+    // @ts-ignore
+    const begin: NavigatorTile = grid.findTile({x: 0, y: 9});
+    // @ts-ignore
+    const end: NavigatorTile = grid.findTile({x: 0, y: 3});
+    const navigator: Navigator = new Navigator({grid, begin, end});
+    navigator.start();
+
+    //     if (short.find(t => t.x === x && t.y === y)) {
+    //       console.log(game.isOverlappable(selectedCard, {x, y}))
+    //     }
+    //     if (!game.isOverlappable(selectedCard, {x, y}))
+    //       grid.setWalkableAt(x, y, false);
+    //   }
+    // }
+    // let finder = new pf.BiDijkstraFinder({ allowDiagonal: true, dontCrossCorners: false});
+
+    // let path = finder.findPath(0,9, 0,3, grid).map((c: any) => ({ x: c[0], y: c[1]}));
+    let points = navigator.path.map(tile => tile.position);
+    // let test = p.search({ x: 0, y: 9 }, { x: 0, y: 3 }, (p: Point) => game.isValidPoint(p) && game.isOverlappable(selectedCard, p), path);
+    updateTilesInPath(points);
+  }
+
   return (
     <div className="MapContainer">
       <div className="Map" style={mapStyles}>
@@ -154,8 +198,9 @@ const Map: React.FC = () => {
               <Tile
                 leftClickHandler={leftClick}
                 rightClickHandler={rightClick}
-                tilesMovableTo={isMovableTo(card.top())}
-                tilesInteractableTo={isInteractableTo(card.top())}
+                isMovable={isMovableTo(card.top())}
+                isInteractable={isInteractableTo(card.top())}
+                isInPath={isPartOfPath(card.top())}
                 selected={isSelected(card.top())}
                 topCard={card.top()}
                 key={`card-${card.topId()}`}
@@ -172,6 +217,7 @@ const Map: React.FC = () => {
                 {
                   contextMenu && contextMenu.id === card.topId() &&
                   <ContextMenu
+                    getPath={getPath}
                     clearState={clearState}
                     selectedCard={contextMenu.card}
                     game={game}

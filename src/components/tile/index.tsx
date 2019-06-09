@@ -7,15 +7,17 @@ import { CardObjectType } from "../../game/types/card-object-type";
 import helpers from '../../helpers';
 import EntityObject from '../../game/objects/entity-object';
 import PlayerCard from '../../game/cards/utility/player-card';
+import Entities from '../../game/cards/get-entity';
 
 interface TileProps {
   data: TileInstace;
   selected: boolean;
-  tilesInteractableTo: InteractionType;
-  tilesMovableTo: boolean;
+  isInteractable: InteractionType;
+  isMovable: boolean;
+  isInPath: boolean;
   leftClickHandler: Function;
   rightClickHandler: Function;
-  topCard: CardObject | undefined;
+  topCard: CardObject;
 }
 
 const Tile: React.FC<TileProps> = ({
@@ -23,22 +25,21 @@ const Tile: React.FC<TileProps> = ({
   selected,
   leftClickHandler,
   rightClickHandler,
-  tilesInteractableTo,
-  tilesMovableTo,
+  isInteractable,
+  isMovable,
+  isInPath,
   topCard,
   children
 }) => {
   const backgroundImageOrColor = () => {
-    if (topCard) {
-      if (topCard.tileImage) {
-        return {
-          backgroundImage: `url(${topCard.tileImage})`
-        }
+    if (topCard.tileImage) {
+      return {
+        backgroundImage: `url(${topCard.tileImage})`
       }
+    }
 
-      if (topCard.objectType === CardObjectType.Entity) {
-        return { backgroundColor: (topCard as EntityObject).tileColor };
-      }
+    if (topCard.objectType === CardObjectType.Entity) {
+      return { backgroundColor: (topCard as EntityObject).tileColor };
     }
     return { backgroundColor: '' };
   }
@@ -48,11 +49,13 @@ const Tile: React.FC<TileProps> = ({
     return {
       'Tile': true,
       'Selected': selected,
-      'InteractableEnemy': tilesInteractableTo === InteractionType.Enemy,
-      'InteractableEnemyNoTarget': tilesInteractableTo === InteractionType.EnemyNoTarget,
-      'MovableTo': tilesMovableTo,
+      'InteractableEnemy': isInteractable === InteractionType.Enemy,
+      'InteractableEnemyNoTarget': isInteractable === InteractionType.EnemyNoTarget,
+      'InPath': isInPath,
+      'MovableTo': isMovable,
       'Enemy': topCard && (topCard.objectType === CardObjectType.Entity) && (topCard as EntityObject).isEnemy,
-      'Friendly': topCard && (topCard.objectType === CardObjectType.Entity) && !(topCard as EntityObject).isEnemy
+      'Friendly': topCard && (topCard.objectType === CardObjectType.Entity) && !(topCard as EntityObject).isEnemy,
+      'Choosing': topCard instanceof PlayerCard
     }
   }
 
@@ -74,9 +77,15 @@ const Tile: React.FC<TileProps> = ({
       onClick={(e) => leftClickHandler(e, topCard)}
       style={topCardStyle}>
       {
-        displayHealth > 0 &&
+        displayHealth > 0 && !(topCard instanceof PlayerCard) &&
         <div className='HealthBar'>
           {displayHealth}
+        </div>
+      }
+      {
+        topCard.objectType === CardObjectType.Entity && !(topCard as EntityObject).isEnemy && !(topCard instanceof PlayerCard) &&
+        <div className='TurnOver'>
+          ⌛
         </div>
       }
       {

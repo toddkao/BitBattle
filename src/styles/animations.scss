@@ -12,10 +12,27 @@
   50%  { transform: translate(0, -10px) }
 }
 
+@keyframes rotate {
+  0% {transform: rotate(-10deg)}
+  100% {transform: rotate(10deg)}
+}
+
+@mixin rotate () {
+  animation: rotate 0.5s infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate-reverse;
+}
+
+@mixin pulse () {
+  animation: shrink 0.9s infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate-reverse;
+}
+
 @keyframes expand {
   50%  { transform: scale(1.2)}
 }
 
 @keyframes shrink {
-  50%  { transform: scale(0.8)}
+  50%  { transform: scale(0.9)}
 }

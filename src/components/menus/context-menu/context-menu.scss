@@ -12,6 +12,6 @@
   width: auto;
   .Button {
     font-size: $medium-font;
-    @include hover(shrink, 1s);
+    @include pulse;
   }
 }
