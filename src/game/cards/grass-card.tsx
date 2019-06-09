@@ -1,4 +1,3 @@
-import TileObject from "../interfaces/tile-object";
 import TerrainObject from "./terrain-object"
 
 export default class GrassCard extends TerrainObject {

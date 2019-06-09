@@ -1,6 +1,4 @@
-import TileObject from "../interfaces/tile-object";
 import Point from "../interfaces/point";
-import Map from "../map";
 import EntityObject from "./entity-object";
 
 export default class AttackDogCard extends EntityObject {

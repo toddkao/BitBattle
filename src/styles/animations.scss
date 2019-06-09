@@ -1,0 +1,21 @@
+@keyframes pulseBorder {
+  0%   { border-width: 5px; }
+  50%  { border-width: 1px; }
+  100% { border-width: 5px; }
+}
+
+@keyframes breathe {
+  50%  { opacity: 0.2; }
+}
+
+@keyframes bob {
+  50%  { transform: translate(0, -10px) }
+}
+
+@keyframes expand {
+  50%  { transform: scale(1.2)}
+}
+
+@keyframes shrink {
+  50%  { transform: scale(0.8)}
+}

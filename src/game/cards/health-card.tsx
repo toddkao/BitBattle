@@ -20,7 +20,7 @@ export default class HealthCard extends EntityObject {
   }
 
   isOverlappable(t: TileObject): boolean {
-    if (t.id == this.parent.id) return true;
+    if (t.id === this.parent.id) return true;
     return false;
   }
 }

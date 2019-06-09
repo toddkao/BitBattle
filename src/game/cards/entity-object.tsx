@@ -48,7 +48,7 @@ export default class EntityObject implements TileObject {
   }
 
   getHealthCard(): EntityObject {
-    if (this.children.length == 0) return this;
+    if (this.children.length === 0) return this;
     else return this.children[this.children.length - 1];
   }
 

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Game from '../../game/map';
-import Board from '../../game/board';
 import './map.scss';
 import TileObject from '../../game/interfaces/tile-object';
 import Point from '../../game/interfaces/point';
@@ -44,15 +43,14 @@ const Map: React.FC = () => {
   const [selectedCard, updateSelectedCard] = useState();
   const [tilesMovableTo, updateTilesMovableTo] = useState();
   const [tilesInteractableTo, updateTilesInteractableTo] = useState();
-  const [game, updateGame] = useState(g);
-  const [showMenu, updateShowMenu] = useState(true);
-  const [contextMenuId, updateContextMenuId] = useState();
+  const [game] = useState(g);
+  const [contextMenu, updateContextMenu] = useState();
 
   const clearState = () => {
     updateSelectedCard(undefined);
     updateTilesMovableTo(undefined);
     updateTilesInteractableTo(undefined);
-    updateContextMenuId(undefined);
+    updateContextMenu(undefined);
   }
 
   const rightClick = (e: Event, tile: TileObject) => {
@@ -60,7 +58,7 @@ const Map: React.FC = () => {
     const selectingCards = isPlayerSelectingCards();
     if (!selectingCards) {
       if (selectedCard) clearState();
-      updateContextMenuId(tile.id);
+      updateContextMenu({id: tile.id, card: tile});
     }
   }
 
@@ -73,17 +71,17 @@ const Map: React.FC = () => {
     // If we have a tile selected, and the new tile we're selecting is a movable tile,
     // then we're trying to move our selected tile to the new tile
     const selectingCards = isPlayerSelectingCards();
-    updateContextMenuId(undefined);
+    updateContextMenu(undefined);
 
     if (selectedCard && !selectingCards) {
-      if (tilesInteractableTo && tilesInteractableTo.some((t: Point) => t.x == tile.x && t.y == tile.y) && helpers.isEnemy(tile)) {
+      if (tilesInteractableTo && tilesInteractableTo.some((t: Point) => t.x === tile.x && t.y === tile.y) && helpers.isEnemy(tile)) {
         game.interact(selectedCard, tile);
         clearState();
-      } else if (tilesMovableTo && tilesMovableTo.some((t: Point) => t.x == tile.x && t.y == tile.y))  {
+      } else if (tilesMovableTo && tilesMovableTo.some((t: Point) => t.x === tile.x && t.y === tile.y))  {
         game.move(selectedCard, tile);
         clearState();
       }
-    } else if (!isSelected(tile) && tile.objectType == TileObjectType.Entity /* && !helpers.isEnemy(tile) */) {
+    } else if (!isSelected(tile) && tile.objectType === TileObjectType.Entity /* && !helpers.isEnemy(tile) */) {
       updateSelectedCard(tile);
 
       if (!selectingCards) {
@@ -106,14 +104,14 @@ const Map: React.FC = () => {
   const isMovableTo = (tile: TileObject | undefined) => {
     if (!tile) return false;
     if (!tilesMovableTo) return false;
-    if (tilesMovableTo.some((t: Point) => t.x == tile.x && t.y == tile.y)) return true;
+    if (tilesMovableTo.some((t: Point) => t.x === tile.x && t.y === tile.y)) return true;
     return false;
   }
 
   const isInteractableTo = (tile: TileObject | undefined) => {
     if (!tilesInteractableTo) return InteractionType.None;
     if (!tile) return InteractionType.None;
-    if (tilesInteractableTo.some((t: Point) => t.x == tile.x && t.y == tile.y)) {
+    if (tilesInteractableTo.some((t: Point) => t.x === tile.x && t.y === tile.y)) {
       if (helpers.isEnemy(tile)) {
         return InteractionType.Enemy;
       } else {
@@ -164,7 +162,7 @@ const Map: React.FC = () => {
                 data={tile}
               >
                 {
-                  showMenu && isSelected(tile.top()) && (selectedCard instanceof PlayerCard) &&
+                  isSelected(tile.top()) && (selectedCard instanceof PlayerCard) &&
                   <ChooseCardMenu
                     clickHandler={choosePlayerCard}
                     selectedCard={selectedCard}
@@ -172,9 +170,10 @@ const Map: React.FC = () => {
                   />
                 }
                 {
-                  contextMenuId === tile.topId() &&
+                  contextMenu && contextMenu.id === tile.topId() &&
                   <ContextMenu
-                    selectedCard={selectedCard}
+                    clearState={clearState}
+                    selectedCard={contextMenu.card}
                     game={game}
                   />
                 }

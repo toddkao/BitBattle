@@ -36,13 +36,13 @@ const Tile: React.FC<TileProps> = ({
         }
       }
 
-      if (topCard.objectType == TileObjectType.Entity) {
+      if (topCard.objectType === TileObjectType.Entity) {
         return { backgroundColor: (topCard as EntityObject).tileColor };
       }
     }
     return { backgroundColor: '' };
   }
-  const [topCardStyle, updateTopCard] = useState(backgroundImageOrColor());
+  const [topCardStyle] = useState(backgroundImageOrColor());
 
   const tileClass = () => {
     return {
@@ -51,15 +51,15 @@ const Tile: React.FC<TileProps> = ({
       'InteractableEnemy': tilesInteractableTo === InteractionType.Enemy,
       'InteractableEnemyNoTarget': tilesInteractableTo === InteractionType.EnemyNoTarget,
       'MovableTo': tilesMovableTo,
-      'Enemy': topCard && (topCard.objectType == TileObjectType.Entity) && (topCard as EntityObject).isEnemy
+      'Enemy': topCard && (topCard.objectType === TileObjectType.Entity) && (topCard as EntityObject).isEnemy
     }
   }
 
   let displayHealth: number = 0;
   if (topCard) {
     displayHealth += topCard.health;
-    if (topCard.objectType == TileObjectType.Entity) {
-      const healthCard = (topCard as EntityObject).children.find(c => c.x == topCard.x && c.y == topCard.y);
+    if (topCard.objectType === TileObjectType.Entity) {
+      const healthCard = (topCard as EntityObject).children.find(c => c.x === topCard.x && c.y === topCard.y);
       if (healthCard) {
         displayHealth += healthCard.health;
       }
@@ -79,10 +79,10 @@ const Tile: React.FC<TileProps> = ({
         </div>
       }
       {
-        topCard instanceof PlayerCard && 
-        <div style={{fontSize: '4vmin'}}>
+        topCard instanceof PlayerCard &&
+        <span role="img" aria-label="Choose Player Card" style={{fontSize: '4vmin'}}>
           🔳
-        </div>
+        </span>
       }
       { children }
     </div>

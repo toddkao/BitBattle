@@ -7,10 +7,8 @@ import GrassCard from './cards/grass-card';
 import Board from './board';
 import TileObject from './interfaces/tile-object';
 import EntityObject from './cards/entity-object';
-import AttackDogCard from './cards/attack-dog-card';
 import { TileObjectType } from './types/tile-object-type';
 import helpers from '../helpers';
-import { tsImportEqualsDeclaration } from '@babel/types';
 
 export default class Map {
   tiles: Tile[];
@@ -33,7 +31,7 @@ export default class Map {
     this.height = b.tiles.length;
     this.tiles = new Array(this.width * this.height);
 
-    const DefaultCardType = cards.find(c => c.name == b.mapping['*']);
+    const DefaultCardType = cards.find(c => c.name === b.mapping['*']);
     if (!DefaultCardType) throw new Error(`Default card type is unspecified`);
 
     const tilesString = b.tiles.join('').replace(/ /g, '');
@@ -46,12 +44,12 @@ export default class Map {
         const tile = new Tile(x, y);
         tile.objects.push(new DefaultCardType(x, y, this.nextId++));
 
-        if (short != '*') {
+        if (short !== '*') {
           const CardType = cards.find(c => c.name === b.mapping[short]);
           if (!CardType) throw new Error(`Unknown card type ${short}} - ${b.mapping[short]}`);
           const card = new CardType(x, y, this.nextId++);
 
-          if (card.objectType == TileObjectType.Entity) {
+          if (card.objectType === TileObjectType.Entity) {
             const entity = card as EntityObject;
             entity.health = entity.maxHealthPerCell;
 
@@ -102,8 +100,8 @@ export default class Map {
 
   interact(interacter: TileObject, interactee: TileObject) {
     // assume attacking for now...
-    if (interacter.objectType == TileObjectType.Entity) {
-      if (interactee.objectType == TileObjectType.Entity) {
+    if (interacter.objectType === TileObjectType.Entity) {
+      if (interactee.objectType === TileObjectType.Entity) {
         this.attack(interacter as EntityObject, interactee as EntityObject);
       }
       // ...
@@ -122,10 +120,10 @@ export default class Map {
       defenderCell.health -= hit;
       damage -= hit;
 
-      if (defenderCell.health == 0) { // we killed this cell
+      if (defenderCell.health === 0) { // we killed this cell
         this.removeCard(defenderCell);
 
-        if (defenderCell.id != defender.id) {
+        if (defenderCell.id !== defender.id) {
           defender.removeChild(defenderCell.id);
           defenderCell = defender.getHealthCard();
         }

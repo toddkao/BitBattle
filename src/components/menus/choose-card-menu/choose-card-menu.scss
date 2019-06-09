@@ -1,5 +1,17 @@
+@import '../../../styles/global.scss';
+
 .MenuItem {
   width: 100%;
   border: 2px solid black;
   box-sizing: border-box;
+  @include hover(shrink, 1s);
+}
+
+.Menu {
+  &.ChooseCardMenu {
+    background-color: initial;
+    border: initial;
+    width: 250%;
+    grid-gap: 4px;
+  }
 }

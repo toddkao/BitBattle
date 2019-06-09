@@ -1,0 +1,10 @@
+@mixin hover (
+  $animate: initial,
+  $duration: 0s,
+  $loop: infinite,
+) {
+  &:hover {
+    cursor: pointer;
+    animation: $animate $duration $loop;
+  }
+}

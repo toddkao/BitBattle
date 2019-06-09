@@ -1,6 +1,4 @@
 import Point from './interfaces/point';
-import { ValidCard } from './types/valid-card';
-import { MovableCard } from './types/movable-card';
 import TileObject from './interfaces/tile-object';
 
 export default class Tile implements Point {
@@ -14,9 +12,9 @@ export default class Tile implements Point {
     this.objects = [];
   }
 
-  top() : TileObject | undefined {
-    if (!this.objects) return undefined;
-    if (this.objects.length == 0) throw new Error('Tile unexpectedly has no objects');
+  top() : TileObject {
+    // if (!this.objects) return undefined;
+    if (this.objects.length === 0) throw new Error('Tile unexpectedly has no objects');
     return this.objects[this.objects.length - 1];
   }
 
@@ -26,14 +24,14 @@ export default class Tile implements Point {
   }
 
   removeCard(id: number) {
-    const i : number = this.objects.findIndex(o => o.id == id);
+    const i : number = this.objects.findIndex(o => o.id === id);
     if (i > -1) {
       this.objects.splice(i, 1);
     }
   }
 
   addCard(o: TileObject) : void {
-    if (this.objects.find(obj => obj.id == o.id)) return;
+    if (this.objects.find(obj => obj.id === o.id)) return;
 
     this.objects.push(o);
   }

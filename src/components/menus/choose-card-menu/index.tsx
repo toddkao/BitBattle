@@ -24,11 +24,12 @@ const ChooseCardMenu: React.FC<ChooseCardMenuProps> = ({
   }
 
   return (
-    <div className='Menu' style={menuStyles} >
+    <div className='Menu ChooseCardMenu' style={menuStyles} >
       {
         helpers.allEntityTypes.map((x, i) => {
           return (
             <img
+              alt="Menu Item"
               onClick={() => clickHandler(x.type)}
               className='MenuItem'
               src={x.image}

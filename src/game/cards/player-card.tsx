@@ -1,7 +1,3 @@
-import TileObject from "../interfaces/tile-object";
-import Point from "../interfaces/point";
-import HealthCard from "./health-card";
-import Map from "../map";
 import EntityObject from "./entity-object";
 
 export default class PlayerCard extends EntityObject {

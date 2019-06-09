@@ -1,6 +1,3 @@
-import TileObject from "../interfaces/tile-object";
-import Point from "../interfaces/point";
-import Map from "../map";
 import SpybotEnemyObject from "./spybot-enemy-object";
 
 export default class Watchman1Card extends SpybotEnemyObject {

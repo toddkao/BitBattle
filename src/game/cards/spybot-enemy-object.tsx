@@ -1,6 +1,4 @@
-import TileObject from "../interfaces/tile-object";
 import Point from "../interfaces/point";
-import Map from "../map";
 import EntityObject from "./entity-object";
 
 export default class SpybotEnemyObject extends EntityObject {
@@ -15,7 +13,7 @@ export default class SpybotEnemyObject extends EntityObject {
     var p : Point[] = [];
     for (var y = -range; y <= range; y++) {
       for (var x = -range; x <= range; x++) {
-        if (y ==0 && x == 0) continue;
+        if (y === 0 && x === 0) continue;
         p.push({x: this.x+x, y: this.y+y});
       }
     }

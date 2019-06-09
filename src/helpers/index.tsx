@@ -2,7 +2,6 @@ import TileObject from "../game/interfaces/tile-object";
 import { TileObjectType } from "../game/types/tile-object-type";
 import EntityObject from "../game/cards/entity-object";
 import AttackDogCard from "../game/cards/attack-dog-card";
-import { type } from "os";
 import GuardPupCard from "../game/cards/guard-pup-card";
 import Sentinel1Card from "../game/cards/sentinel-1.card";
 import Watchman1Card from "../game/cards/watchman-card";
@@ -16,7 +15,7 @@ export default {
     return c;
   },
   isEnemy(tile: TileObject): boolean {
-    return (tile.objectType == TileObjectType.Entity) && (tile as EntityObject).isEnemy
+    return (tile.objectType === TileObjectType.Entity) && (tile as EntityObject).isEnemy
   },
   get allEntityTypes (): any[] {
     var types = [

@@ -1,17 +1,17 @@
+@import '../../../styles/global.scss';
+
 .ContextMenu {
+  @include flex(
+    $vertical: flex-start,
+    $direction: column
+  );
+  background-color: initial;
+  border: initial;
+  overflow: visible;
   color: black;
+  width: auto;
   .Button {
-    height: 3vmin;
-    font-size: 2vmin;
-  }
-  .PrimaryButton {
-    color: white;
-    background-color: #2196f3;
-    border-radius: 4px;
-    border: 0px;
-    margin: 2px;
-    &:hover {
-      cursor: pointer;
-    }
+    font-size: $medium-font;
+    @include hover(shrink, 1s);
   }
 }
