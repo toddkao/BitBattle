@@ -10,6 +10,7 @@ import EntityObject from './cards/entity-object';
 import AttackDogCard from './cards/attack-dog-card';
 import { TileObjectType } from './types/tile-object-type';
 import helpers from '../helpers';
+import { tsImportEqualsDeclaration } from '@babel/types';
 
 export default class Map {
   tiles: Tile[];
@@ -23,48 +24,47 @@ export default class Map {
       GrassCard,
       PlayerCard,
       BrickCard,
-      AttackDogCard,
-    ]
+    ].concat(helpers.allEntityTypes.map(e => e.type));
 
     if (!b.tiles.every(t => t.length === b.tiles[0].length)) throw new Error('Invalid board tiles');
     if (!Object.values(b.mapping).every(m => cards.find(c => c.name === m))) throw new Error('Invalid card type');
 
-    this.width = b.tiles[0].replace(/ /g, '').length;
+    this.width = Math.floor(b.tiles[0].replace(/ /g, '').length / 2);
     this.height = b.tiles.length;
-    let tiles = new Array(this.width * this.height);
-    this.tiles = tiles;
+    this.tiles = new Array(this.width * this.height);
 
     const DefaultCardType = cards.find(c => c.name == b.mapping['*']);
     if (!DefaultCardType) throw new Error(`Default card type is unspecified`);
 
     const tilesString = b.tiles.join('').replace(/ /g, '');
 
-    for (let i = 0; i < tilesString.length; i++) {
-      let x = i % this.width;
-      let y = Math.floor(i / this.width);
-      let short = tilesString.charAt(i);
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        let i = this.tilePointToIndex({ x, y });
+        let short = tilesString.substring(i * 2, (i * 2) + 2);
 
-      const tile = new Tile(x, y);
-      tile.objects.push(new DefaultCardType(x, y, this.nextId++));
+        const tile = new Tile(x, y);
+        tile.objects.push(new DefaultCardType(x, y, this.nextId++));
 
-      if (short != '*') {
-        const CardType = cards.find(c => c.name === b.mapping[short]);
-        if (!CardType) throw new Error(`Unknown card type ${short}} - ${b.mapping[short]}`);
-        const card = new CardType(x, y, this.nextId++);
+        if (short != '*') {
+          const CardType = cards.find(c => c.name === b.mapping[short]);
+          if (!CardType) throw new Error(`Unknown card type ${short}} - ${b.mapping[short]}`);
+          const card = new CardType(x, y, this.nextId++);
 
-        if (card.objectType == TileObjectType.Entity) {
-          const entity = card as EntityObject;
-          entity.health = entity.maxHealthPerCell;
+          if (card.objectType == TileObjectType.Entity) {
+            const entity = card as EntityObject;
+            entity.health = entity.maxHealthPerCell;
 
-          if (short != 'P') { // temp
-            entity.isEnemy = true;
+            if (short != 'P') { // temp
+              entity.isEnemy = true;
+            }
           }
+
+          tile.objects.push(card);
         }
 
-        tile.objects.push(card);
+        this.setTile(tile, { x, y });
       }
-
-      this.setTile(tile, { x, y });
     }
   }
 
@@ -76,10 +76,16 @@ export default class Map {
     return true;
   }
 
-  isOverlappable(t: TileObject, p: Point) : boolean {
+  isOverlappable(t: TileObject, p: Point): boolean {
     const tile = this.getTile(p);
     if (tile.objects.some(o => !o.isOverlappable(t) || helpers.isEnemy(o))) return false;
     return true;
+  }
+
+  private indexToTilePoint(i: number): Point {
+    var p = { x: i % this.width, y: Math.floor(i / this.width) };
+    if (!this.isValidPoint(p)) throw new Error(`Point(${p.x}, ${p.y}) is out of bounds`);
+    return p;
   }
 
   private tilePointToIndex(p: Point): number {
@@ -118,7 +124,7 @@ export default class Map {
 
       if (defenderCell.health == 0) { // we killed this cell
         this.removeCard(defenderCell);
-        
+
         if (defenderCell.id != defender.id) {
           defender.removeChild(defenderCell.id);
           defenderCell = defender.getHealthCard();

@@ -3,7 +3,6 @@
   height: auto;
   min-width: 0;
   min-height: 0;
-  border: 1px solid black;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -13,7 +12,6 @@
   background-repeat: no-repeat;
   background-position: center;
   background-origin: content-box;
-  padding: 2px;
   position: relative;
   &:hover{
     cursor: pointer;

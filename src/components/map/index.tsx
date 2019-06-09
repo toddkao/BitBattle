@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Game from '../../game/map';
-import Tile from '../tile';
 import Board from '../../game/board';
 import './map.scss';
 import TileObject from '../../game/interfaces/tile-object';
@@ -10,31 +9,31 @@ import { TileObjectType } from '../../game/types/tile-object-type';
 import EntityObject from '../../game/cards/entity-object';
 import helpers from '../../helpers';
 import PlayerCard from '../../game/cards/player-card';
+import Tile from '../tile';
 
 const boardImport = {
+  "comment": "https://www.youtube.com/watch?v=HNJA0wfbGfE&list=PL56CE84F6287C82A8&index=10",
   "tiles": [
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * G G * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * P * * * * * * * *",
-    "* * * * * P * * E * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * G G * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
-    "* * * * * * * * * * * * * * * *",
+    "XX XX XX XX XX XX XX PP XX XX XX XX XX PP",
+    "AP PP AP XX XX XX PP XX XX PP XX PP XX XX",
+    "XX S1 XX XX XX XX XX XX PP XX XX XX XX XX",
+    "XX XX XX S1 XX XX XX XX XX XX PP XX PP XX",
+    "OO XX WM XX XX XX XX XX XX XX XX XX XX PP",
+    "OO OO XX AP XX XX XX XX XX XX XX XX PP XX",
+    "OO OO XX S1 XX S1 XX XX XX XX XX XX XX XX",
+    "OO XX WM XX S1 XX AP XX XX S1 XX XX XX XX",
+    "AP XX XX XX XX XX XX XX WM XX S1 XX XX XX",
+    "XX PP AP WM OO OO OO XX XX XX XX AP PP AP",
+    "AP XX XX OO OO OO OO OO XX AP XX XX XX XX"
   ],
   "mapping": {
     "*": "BrickCard",
-    "G": "GrassCard",
-    "P": "PlayerCard",
-    "E": "AttackDogCard"
+    "XX": "BrickCard",
+    "OO": "GrassCard",
+    "PP": "PlayerCard",
+    "AP": "GuardPupCard",
+    "WM": "Watchman1Card",
+    "S1": "Sentinel1Card"
   }
 }
 
@@ -57,23 +56,33 @@ const Map: React.FC = () => {
     if (selectedCard) clearState();
   }
 
+  const isPlayerSelectingCards = (): boolean => {
+    if (game.tiles.some(t => t.objects.some(o => o instanceof PlayerCard))) return true;
+    return false;
+  }
+
   const leftClick = (e: Event, tile: TileObject) => {
     // If we have a tile selected, and the new tile we're selecting is a movable tile,
     // then we're trying to move our selected tile to the new tile
-    if (selectedCard) {
-      if (tilesInteractableTo && tilesInteractableTo.some((t: Point) => t.x == tile.x && t.y == tile.y) && helpers.isEnemy(tile)){
+    const selectingCards = isPlayerSelectingCards();
+
+    if (selectedCard && !selectingCards) {
+      if (tilesInteractableTo && tilesInteractableTo.some((t: Point) => t.x == tile.x && t.y == tile.y) && helpers.isEnemy(tile)) {
         game.interact(selectedCard, tile);
         clearState();
-      } else if (tilesMovableTo && tilesMovableTo.some((t: Point) => t.x == tile.x && t.y == tile.y)) {
+      } else if (tilesMovableTo && tilesMovableTo.some((t: Point) => t.x == tile.x && t.y == tile.y))  {
         game.move(selectedCard, tile);
         clearState();
       }
     } else if (!isSelected(tile) && tile.objectType == TileObjectType.Entity /* && !helpers.isEnemy(tile) */) {
       updateSelectedCard(tile);
-      if (tile.getMovable)
-        updateTilesMovableTo(tile.getMovable().filter(p => game.isOverlappable(tile, p)));
-      if (tile.getInteractable) {
-        updateTilesInteractableTo(tile.getInteractable().filter(p => game.isValidPoint(p)));
+
+      if (!selectingCards) {
+        if (tile.getMovable)
+          updateTilesMovableTo(tile.getMovable().filter(p => game.isValidPoint(p) && game.isOverlappable(tile, p)));
+        if (tile.getInteractable) {
+          updateTilesInteractableTo(tile.getInteractable().filter(p => game.isValidPoint(p)));
+        }
       }
     }
   }
@@ -106,10 +115,10 @@ const Map: React.FC = () => {
   }
 
   const choosePlayerCard = (type: any) => {
-    
+
     game.removeCard(selectedCard);
 
-    let card : EntityObject = (new type(selectedCard.x, selectedCard.y, game.nextId++)) as EntityObject;
+    let card: EntityObject = (new type(selectedCard.x, selectedCard.y, game.nextId++)) as EntityObject;
     card.health = card.maxHealthPerCell;
     card.isEnemy = false;
 
@@ -118,13 +127,38 @@ const Map: React.FC = () => {
     clearState();
   }
 
+  const maxDimension = () => {
+    return Math.max(game.width, game.height);
+  }
+
+  console.log(`${game.width / maxDimension() * 100}vmin`)
+  console.log(`${game.height / maxDimension() * 100}vmin`)
+
   const mapStyles = {
     gridTemplateColumns: `repeat(${game.width}, 1fr)`,
     gridTemplateRows: `repeat(${game.height}, 1fr)`,
+    width: `${game.width / maxDimension() * 100}vmin`,
+    height: `${game.height / maxDimension() * 100}vmin`,
+  }
+
+  const menuDirection = (t: TileObject): React.CSSProperties => {
+    let cssBuilder: React.CSSProperties = {top: '0', left: '100%'};
+    if (t) {
+      if (game.width - 2 <= t.x) {
+        if (cssBuilder.left) delete cssBuilder.left;
+        cssBuilder = {...cssBuilder, right: '100%'};
+      }
+      if (game.height - 4 <= t.y) {
+        if (cssBuilder.top) delete cssBuilder.top;
+        cssBuilder = {...cssBuilder, bottom: '0'}
+      }
+    }
+    return cssBuilder;
   }
 
   const menuStyles = {
     gridTemplateColumns: `repeat(${4}, 1fr)`,
+    ...menuDirection(selectedCard),
   }
 
   return (
@@ -147,7 +181,7 @@ const Map: React.FC = () => {
                   showMenu && isSelected(tile.top()) && (selectedCard instanceof PlayerCard) &&
                   <div className='Menu' style={menuStyles} >
                     {
-                      helpers.allEntityTypes.map((x, i)=> {
+                      helpers.allEntityTypes.map((x, i) => {
                         return (
                           <img
                             onClick={() => choosePlayerCard(x.type)}
