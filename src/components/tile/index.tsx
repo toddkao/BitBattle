@@ -6,6 +6,7 @@ import { InteractionType } from '../../game/types/interaction-type';
 import { TileObjectType } from "../../game/types/tile-object-type";
 import helpers from '../../helpers';
 import EntityObject from '../../game/cards/entity-object';
+import PlayerCard from '../../game/cards/player-card';
 
 interface TileProps {
   data: TileInstace;
@@ -75,6 +76,12 @@ const Tile: React.FC<TileProps> = ({
         displayHealth > 0 &&
         <div className='HealthBar'>
           {displayHealth}
+        </div>
+      }
+      {
+        topCard instanceof PlayerCard && 
+        <div style={{fontSize: '4vmin'}}>
+          🔳
         </div>
       }
       { children }
