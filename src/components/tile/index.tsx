@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './tile.scss';
 import TileInstace from '../../game/tile';
-import TileObject from '../../game/interfaces/card';
+import CardObject from '../../game/interfaces/card';
 import { InteractionType } from '../../game/types/interaction-type';
-import { TileObjectType } from "../../game/types/tile-object-type";
+import { CardObjectType } from "../../game/types/card-object-type";
 import helpers from '../../helpers';
 import EntityObject from '../../game/objects/entity-object';
 import PlayerCard from '../../game/cards/utility/player-card';
@@ -15,7 +15,7 @@ interface TileProps {
   tilesMovableTo: boolean;
   leftClickHandler: Function;
   rightClickHandler: Function;
-  topCard: TileObject | undefined;
+  topCard: CardObject | undefined;
 }
 
 const Tile: React.FC<TileProps> = ({
@@ -36,7 +36,7 @@ const Tile: React.FC<TileProps> = ({
         }
       }
 
-      if (topCard.objectType === TileObjectType.Entity) {
+      if (topCard.objectType === CardObjectType.Entity) {
         return { backgroundColor: (topCard as EntityObject).tileColor };
       }
     }
@@ -51,15 +51,15 @@ const Tile: React.FC<TileProps> = ({
       'InteractableEnemy': tilesInteractableTo === InteractionType.Enemy,
       'InteractableEnemyNoTarget': tilesInteractableTo === InteractionType.EnemyNoTarget,
       'MovableTo': tilesMovableTo,
-      'Enemy': topCard && (topCard.objectType === TileObjectType.Entity) && (topCard as EntityObject).isEnemy,
-      'Friendly': topCard && (topCard.objectType === TileObjectType.Entity) && !(topCard as EntityObject).isEnemy
+      'Enemy': topCard && (topCard.objectType === CardObjectType.Entity) && (topCard as EntityObject).isEnemy,
+      'Friendly': topCard && (topCard.objectType === CardObjectType.Entity) && !(topCard as EntityObject).isEnemy
     }
   }
 
   let displayHealth: number = 0;
   if (topCard) {
     displayHealth += topCard.health;
-    if (topCard.objectType === TileObjectType.Entity) {
+    if (topCard.objectType === CardObjectType.Entity) {
       const healthCard = (topCard as EntityObject).children.find(c => c.x === topCard.x && c.y === topCard.y);
       if (healthCard) {
         displayHealth += healthCard.health;

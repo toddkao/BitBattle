@@ -1,7 +1,7 @@
-import TileObject from "../interfaces/card";
-import { TileObjectType } from "../types/tile-object-type";
+import CardObject from "../interfaces/card";
+import { CardObjectType } from "../types/card-object-type";
 
-export default class TerrainObject implements TileObject {
+export default class TerrainObject implements CardObject {
   x: number;
   y: number;
   id: number;
@@ -16,7 +16,7 @@ export default class TerrainObject implements TileObject {
   }
 
   get health() { return 0; }
-  get objectType() : TileObjectType { return TileObjectType.Terrain; }
+  get objectType() : CardObjectType { return CardObjectType.Terrain; }
 
-  isOverlappable(t: TileObject): boolean { return false; }
+  isOverlappable(card: CardObject): boolean { return false; }
 }

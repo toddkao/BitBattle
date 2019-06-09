@@ -3,9 +3,9 @@ import Point from './interfaces/point';
 
 import PlayerCard from './cards/utility/player-card';
 import Board from './board';
-import TileObject from './interfaces/card';
+import CardObject from './interfaces/card';
 import EntityObject from './objects/entity-object';
-import { TileObjectType } from './types/tile-object-type';
+import { CardObjectType } from './types/card-object-type';
 import helpers from '../helpers';
 
 import cardList from './cards/get-all';
@@ -47,7 +47,7 @@ export default class Map {
           if (!CardType) throw new Error(`Unknown card type ${short}} - ${b.mapping[short]}`);
           const card = new CardType(x, y, this.nextId++);
 
-          if (card.objectType === TileObjectType.Entity) {
+          if (card.objectType === CardObjectType.Entity) {
             const entity = card as EntityObject;
             entity.health = entity.maxHealthPerCell;
 
@@ -72,9 +72,9 @@ export default class Map {
     return true;
   }
 
-  isOverlappable(t: TileObject, p: Point): boolean {
+  isOverlappable(card: CardObject, p: Point): boolean {
     const tile = this.getTile(p);
-    if (tile.objects.some(o => !o.isOverlappable(t) || helpers.isEnemy(o))) return false;
+    if (tile.objects.some(tile => !tile.isOverlappable(card) || helpers.isEnemy(tile))) return false;
     return true;
   }
 
@@ -96,18 +96,18 @@ export default class Map {
     this.getTile(p).addCard(o);
   }
 
-  interact(interacter: TileObject, interactee: TileObject) {
+  interact(interacter: CardObject, interactee: CardObject) {
     // assume attacking for now...
-    if (interacter.objectType === TileObjectType.Entity) {
-      if (interactee.objectType === TileObjectType.Entity) {
+    if (interacter.objectType === CardObjectType.Entity) {
+      if (interactee.objectType === CardObjectType.Entity) {
         this.attack(interacter as EntityObject, interactee as EntityObject);
       }
       // ...
     }
   }
 
-  removeCard(t: TileObject) {
-    this.getTile(t).removeCard(t.id);
+  removeCard(card: CardObject) {
+    this.getTile(card).removeCard(card.id);
   }
 
   private attack(attacker: EntityObject, defender: EntityObject) {

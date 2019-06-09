@@ -1,12 +1,12 @@
 import React from 'react';
 import menuHelper from '../menu-helper';
 import Map from '../../../game/map';
-import TileObject from '../../../game/interfaces/card';
+import CardObject from '../../../game/interfaces/card';
 import './context-menu.scss';
 import '../menu.scss';
 
 interface ContextMenuProps {
-  selectedCard: TileObject,
+  selectedCard: CardObject,
   clearState: Function,
   game: Map
 }

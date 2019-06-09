@@ -1,10 +1,10 @@
 import Point from '../interfaces/point';
 import Map from "../map";
-import TileObject from "../interfaces/card";
+import CardObject from "../interfaces/card";
 //import HealthCard from "./health-card";
-import { TileObjectType } from '../types/tile-object-type';
+import { CardObjectType } from '../types/card-object-type';
 
-export default class EntityObject implements TileObject {
+export default class EntityObject implements CardObject {
   x: number;
   y: number;
   id: number;
@@ -39,9 +39,9 @@ export default class EntityObject implements TileObject {
     this.tileImage = '';
   }
 
-  get objectType() : TileObjectType { return TileObjectType.Entity; }
+  get objectType() : CardObjectType { return CardObjectType.Entity; }
 
-  isOverlappable(t: TileObject): boolean { return false; }
+  isOverlappable(card: CardObject): boolean { return false; }
 
   removeChild(id: number) {
     this.children = this.children.filter(c => c.id !== id);

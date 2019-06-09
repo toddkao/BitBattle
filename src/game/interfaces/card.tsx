@@ -1,13 +1,13 @@
 import Point from './point';
-import { TileObjectType } from "../types/tile-object-type";
+import { CardObjectType } from "../types/card-object-type";
 
-export default interface TileObject extends Point {
+export default interface CardObject extends Point {
   readonly id: number;
   readonly health: number;
   readonly tileImage?: string;
-  readonly objectType: TileObjectType;
+  readonly objectType: CardObjectType;
 
-  isOverlappable(t: TileObject): boolean;
+  isOverlappable(card: CardObject): boolean;
 
   getMovable?(): Point[];
   getInteractable?(): Point[];

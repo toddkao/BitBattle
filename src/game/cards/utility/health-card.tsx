@@ -1,4 +1,4 @@
-import TileObject from "../../interfaces/card";
+import CardObject from "../../interfaces/card";
 import EntityObject from "../../objects/entity-object";
 
 export default class HealthCard extends EntityObject {
@@ -17,8 +17,8 @@ export default class HealthCard extends EntityObject {
     return this.parent.getHealthCard();
   }
 
-  isOverlappable(t: TileObject): boolean {
-    if (t.id === this.parent.id) return true;
+  isOverlappable(card: CardObject): boolean {
+    if (card.id === this.parent.id) return true;
     return false;
   }
 }

@@ -1,10 +1,10 @@
 import Point from './interfaces/point';
-import TileObject from './interfaces/card';
+import CardObject from './interfaces/card';
 
 export default class Tile implements Point {
   x: number;
   y: number;
-  objects: TileObject[];
+  objects: CardObject[];
 
   constructor(x : number, y: number) {
     this.x = x;
@@ -12,15 +12,15 @@ export default class Tile implements Point {
     this.objects = [];
   }
 
-  top() : TileObject {
+  top(): CardObject {
     // if (!this.objects) return undefined;
     if (this.objects.length === 0) throw new Error('Tile unexpectedly has no objects');
     return this.objects[this.objects.length - 1];
   }
 
-  topId() : number {
-    const t = this.top();
-    return t ? t.id : 0;
+  topId(): number {
+    const topCard = this.top();
+    return topCard ? topCard.id : -1;
   }
 
   removeCard(id: number) {
@@ -30,14 +30,13 @@ export default class Tile implements Point {
     }
   }
 
-  addCard(o: TileObject) : void {
-    if (this.objects.find(obj => obj.id === o.id)) return;
-
-    this.objects.push(o);
+  addCard(card: CardObject) : void {
+    if (this.objects.find(x => x.id === card.id)) return;
+    this.objects.push(card);
   }
 
   get tileImage() : string {
-    const t = this.top();
-    return t && t.tileImage ? t.tileImage : '';
+    const topCard = this.top();
+    return topCard && topCard.tileImage ? topCard.tileImage : '';
   }
 }

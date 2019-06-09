@@ -2,13 +2,13 @@ import React from 'react';
 import helpers from '../../../helpers';
 import menuHelper from '../menu-helper';
 import Map from '../../../game/map';
-import TileObject from '../../../game/interfaces/card';
+import CardObject from '../../../game/interfaces/card';
 import './choose-card-menu.scss';
 import '../menu.scss';
 
 interface ChooseCardMenuProps {
   clickHandler: Function,
-  selectedCard: TileObject,
+  selectedCard: CardObject,
   game: Map
 }
 
