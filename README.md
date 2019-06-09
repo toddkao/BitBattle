@@ -1,15 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## BitBattle
+Rebuild of Spybot game in Typescript & React using raw DOM elements
+https://youtu.be/rxEz9u4yFAg?t=65
 
 ![WIP of MVP](https://raw.githubusercontent.com/toddkao/BitBattle/master/public/readme/WIP.png)
