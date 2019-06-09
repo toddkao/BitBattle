@@ -1,4 +1,4 @@
-import SpybotEnemyObject from "./spybot-enemy-object";
+import SpybotEnemyObject from "../../objects/spybot-enemy-object";
 
 export default class Watchman1Card extends SpybotEnemyObject {
   constructor(x: number, y: number, id: number) {

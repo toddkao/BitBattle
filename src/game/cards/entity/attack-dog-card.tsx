@@ -1,5 +1,5 @@
-import Point from "../interfaces/point";
-import EntityObject from "./entity-object";
+import Point from "../../interfaces/point";
+import EntityObject from "../../objects/entity-object";
 
 export default class AttackDogCard extends EntityObject {
   constructor(x: number, y: number, id: number) {

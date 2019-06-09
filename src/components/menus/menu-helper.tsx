@@ -1,4 +1,4 @@
-import TileObject from "../../game/interfaces/tile-object";
+import TileObject from "../../game/interfaces/card";
 import Map from '../../game/map';
 
 export default {

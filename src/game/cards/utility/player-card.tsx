@@ -1,4 +1,4 @@
-import EntityObject from "./entity-object";
+import EntityObject from "../../objects/entity-object";
 
 export default class PlayerCard extends EntityObject {
   constructor(x: number, y: number, id: number) {

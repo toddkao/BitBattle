@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import Game from '../../game/map';
 import './map.scss';
-import TileObject from '../../game/interfaces/tile-object';
+import TileObject from '../../game/interfaces/card';
 import Point from '../../game/interfaces/point';
 import { InteractionType } from '../../game/types/interaction-type';
 import { TileObjectType } from '../../game/types/tile-object-type';
-import EntityObject from '../../game/cards/entity-object';
+import EntityObject from '../../game/objects/entity-object';
 import helpers from '../../helpers';
-import PlayerCard from '../../game/cards/player-card';
+import PlayerCard from '../../game/cards/utility/player-card';
 import Tile from '../tile';
 import ChooseCardMenu from '../menus/choose-card-menu';
 import ContextMenu from '../menus/context-menu';

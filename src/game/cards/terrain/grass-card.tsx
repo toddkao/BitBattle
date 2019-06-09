@@ -1,4 +1,4 @@
-import TerrainObject from "./terrain-object"
+import TerrainObject from "../../objects/terrain-object"
 
 export default class GrassCard extends TerrainObject {
   constructor(x: number, y: number, id: number) {

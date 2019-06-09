@@ -1,4 +1,5 @@
-import SpybotEnemyObject from "./spybot-enemy-object";
+import SpybotEnemyObject from "../../objects/spybot-enemy-object";
+import Point from "../../interfaces/point";
 
 export default class Sentinel1Card extends SpybotEnemyObject {
   constructor(x: number, y: number, id: number) {
@@ -10,4 +11,9 @@ export default class Sentinel1Card extends SpybotEnemyObject {
     this.attackDamage = 2;
     this.attackRange = 1;
   }
+
+  getMovable(): Point[] {
+    return this.getDiagonalPoints();
+  }
+
 }

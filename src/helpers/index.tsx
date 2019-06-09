@@ -1,10 +1,8 @@
-import TileObject from "../game/interfaces/tile-object";
+import TileObject from "../game/interfaces/card";
 import { TileObjectType } from "../game/types/tile-object-type";
-import EntityObject from "../game/cards/entity-object";
-import AttackDogCard from "../game/cards/attack-dog-card";
-import GuardPupCard from "../game/cards/guard-pup-card";
-import Sentinel1Card from "../game/cards/sentinel1-card";
-import Watchman1Card from "../game/cards/watchman1-card";
+import EntityObject from "../game/objects/entity-object";
+
+import Entities from '../game/cards/get-entity';
 
 export default {
   ObjectToClass(o: any): string {
@@ -18,14 +16,7 @@ export default {
     return (tile.objectType === TileObjectType.Entity) && (tile as EntityObject).isEnemy
   },
   get allEntityTypes (): any[] {
-    var types = [
-      AttackDogCard,
-      GuardPupCard,
-      Sentinel1Card,
-      Watchman1Card
-    ];
-
-    return types.map((t: any) => {
+    return Entities.map((t: any) => {
         var dummy = new t();
         return {
           image: dummy.tileImage,

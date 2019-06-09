@@ -1,5 +1,5 @@
 import Point from './interfaces/point';
-import TileObject from './interfaces/tile-object';
+import TileObject from './interfaces/card';
 
 export default class Tile implements Point {
   x: number;

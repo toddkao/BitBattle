@@ -1,7 +1,7 @@
 import React from 'react';
 import menuHelper from '../menu-helper';
 import Map from '../../../game/map';
-import TileObject from '../../../game/interfaces/tile-object';
+import TileObject from '../../../game/interfaces/card';
 import './context-menu.scss';
 import '../menu.scss';
 

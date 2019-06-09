@@ -1,6 +1,6 @@
 import Point from '../interfaces/point';
 import Map from "../map";
-import TileObject from "../interfaces/tile-object";
+import TileObject from "../interfaces/card";
 //import HealthCard from "./health-card";
 import { TileObjectType } from '../types/tile-object-type';
 

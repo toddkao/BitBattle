@@ -1,4 +1,4 @@
-import TileObject from "../interfaces/tile-object";
+import TileObject from "../interfaces/card";
 import { TileObjectType } from "../types/tile-object-type";
 
 export default class TerrainObject implements TileObject {

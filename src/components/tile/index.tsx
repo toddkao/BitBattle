@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import './tile.scss';
 import TileInstace from '../../game/tile';
-import TileObject from '../../game/interfaces/tile-object';
+import TileObject from '../../game/interfaces/card';
 import { InteractionType } from '../../game/types/interaction-type';
 import { TileObjectType } from "../../game/types/tile-object-type";
 import helpers from '../../helpers';
-import EntityObject from '../../game/cards/entity-object';
-import PlayerCard from '../../game/cards/player-card';
+import EntityObject from '../../game/objects/entity-object';
+import PlayerCard from '../../game/cards/utility/player-card';
 
 interface TileProps {
   data: TileInstace;

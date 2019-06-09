@@ -1,14 +1,15 @@
 import Tile from './tile';
 import Point from './interfaces/point';
 
-import BrickCard from './cards/brick-card';
-import PlayerCard from './cards/player-card';
-import GrassCard from './cards/grass-card';
+import PlayerCard from './cards/utility/player-card';
 import Board from './board';
-import TileObject from './interfaces/tile-object';
-import EntityObject from './cards/entity-object';
+import TileObject from './interfaces/card';
+import EntityObject from './objects/entity-object';
 import { TileObjectType } from './types/tile-object-type';
 import helpers from '../helpers';
+
+import cardList from './cards/get-all';
+import objectList from './objects/get-all';
 
 export default class Map {
   tiles: Tile[];
@@ -18,11 +19,8 @@ export default class Map {
 
   constructor(b: Board) {
     this.nextId = 1;
-    const cards = [
-      GrassCard,
-      PlayerCard,
-      BrickCard,
-    ].concat(helpers.allEntityTypes.map(e => e.type));
+    const cards = [...cardList, ...objectList];
+    console.log(cards);
 
     if (!b.tiles.every(t => t.length === b.tiles[0].length)) throw new Error('Invalid board tiles');
     if (!Object.values(b.mapping).every(m => cards.find(c => c.name === m))) throw new Error('Invalid card type');
@@ -117,6 +115,10 @@ export default class Map {
     let defenderCell = defender.getHealthCard();
     while (damage > 0) {
       let hit = Math.min(damage, defenderCell.health);
+      if (hit <= 0) {
+        console.log('zero damage')
+        break;
+      }
       defenderCell.health -= hit;
       damage -= hit;
 

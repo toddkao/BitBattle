@@ -1,5 +1,5 @@
-import TileObject from "../interfaces/tile-object";
-import TerrainObject from "./terrain-object"
+import TileObject from "../../interfaces/card";
+import TerrainObject from "../../objects/terrain-object"
 
 export default class BrickCard extends TerrainObject {
   constructor(x: number, y: number, id: number) {
