@@ -10,20 +10,22 @@ import EntityObject from '../../game/cards/entity-object';
 import helpers from '../../helpers';
 import PlayerCard from '../../game/cards/player-card';
 import Tile from '../tile';
+import ChooseCardMenu from '../menus/choose-card-menu';
+import ContextMenu from '../menus/context-menu';
 
 const boardImport = {
   "comment": "https://www.youtube.com/watch?v=HNJA0wfbGfE&list=PL56CE84F6287C82A8&index=10",
   "tiles": [
-    "XX XX XX XX XX XX XX PP XX XX XX XX XX PP",
-    "AP PP AP XX XX XX PP XX XX PP XX PP XX XX",
-    "XX S1 XX XX XX XX XX XX PP XX XX XX XX XX",
-    "XX XX XX S1 XX XX XX XX XX XX PP XX PP XX",
-    "OO XX WM XX XX XX XX XX XX XX XX XX XX PP",
-    "OO OO XX AP XX XX XX XX XX XX XX XX PP XX",
+    "XX XX XX XX XX XX XX XX XX XX XX XX XX PP",
+    "AP XX AP XX XX XX XX XX XX XX XX XX XX XX",
+    "XX S1 XX XX XX XX XX XX XX XX XX XX XX XX",
+    "XX XX XX S1 XX XX XX XX XX XX XX XX XX XX",
+    "OO XX WM XX XX XX XX XX XX XX XX XX XX XX",
+    "OO OO XX AP XX XX XX XX XX XX XX XX XX XX",
     "OO OO XX S1 XX S1 XX XX XX XX XX XX XX XX",
     "OO XX WM XX S1 XX AP XX XX S1 XX XX XX XX",
     "AP XX XX XX XX XX XX XX WM XX S1 XX XX XX",
-    "XX PP AP WM OO OO OO XX XX XX XX AP PP AP",
+    "XX XX AP WM OO OO OO XX XX XX XX AP XX AP",
     "AP XX XX OO OO OO OO OO XX AP XX XX XX XX"
   ],
   "mapping": {
@@ -44,16 +46,22 @@ const Map: React.FC = () => {
   const [tilesInteractableTo, updateTilesInteractableTo] = useState();
   const [game, updateGame] = useState(g);
   const [showMenu, updateShowMenu] = useState(true);
+  const [contextMenuId, updateContextMenuId] = useState();
 
   const clearState = () => {
     updateSelectedCard(undefined);
     updateTilesMovableTo(undefined);
     updateTilesInteractableTo(undefined);
+    updateContextMenuId(undefined);
   }
 
   const rightClick = (e: Event, tile: TileObject) => {
     e.preventDefault();
-    if (selectedCard) clearState();
+    const selectingCards = isPlayerSelectingCards();
+    if (!selectingCards) {
+      if (selectedCard) clearState();
+      updateContextMenuId(tile.id);
+    }
   }
 
   const isPlayerSelectingCards = (): boolean => {
@@ -65,6 +73,7 @@ const Map: React.FC = () => {
     // If we have a tile selected, and the new tile we're selecting is a movable tile,
     // then we're trying to move our selected tile to the new tile
     const selectingCards = isPlayerSelectingCards();
+    updateContextMenuId(undefined);
 
     if (selectedCard && !selectingCards) {
       if (tilesInteractableTo && tilesInteractableTo.some((t: Point) => t.x == tile.x && t.y == tile.y) && helpers.isEnemy(tile)) {
@@ -131,34 +140,11 @@ const Map: React.FC = () => {
     return Math.max(game.width, game.height);
   }
 
-  console.log(`${game.width / maxDimension() * 100}vmin`)
-  console.log(`${game.height / maxDimension() * 100}vmin`)
-
   const mapStyles = {
     gridTemplateColumns: `repeat(${game.width}, 1fr)`,
     gridTemplateRows: `repeat(${game.height}, 1fr)`,
     width: `${game.width / maxDimension() * 100}vmin`,
     height: `${game.height / maxDimension() * 100}vmin`,
-  }
-
-  const menuDirection = (t: TileObject): React.CSSProperties => {
-    let cssBuilder: React.CSSProperties = {top: '0', left: '100%'};
-    if (t) {
-      if (game.width - 2 <= t.x) {
-        if (cssBuilder.left) delete cssBuilder.left;
-        cssBuilder = {...cssBuilder, right: '100%'};
-      }
-      if (game.height - 4 <= t.y) {
-        if (cssBuilder.top) delete cssBuilder.top;
-        cssBuilder = {...cssBuilder, bottom: '0'}
-      }
-    }
-    return cssBuilder;
-  }
-
-  const menuStyles = {
-    gridTemplateColumns: `repeat(${4}, 1fr)`,
-    ...menuDirection(selectedCard),
   }
 
   return (
@@ -179,20 +165,18 @@ const Map: React.FC = () => {
               >
                 {
                   showMenu && isSelected(tile.top()) && (selectedCard instanceof PlayerCard) &&
-                  <div className='Menu' style={menuStyles} >
-                    {
-                      helpers.allEntityTypes.map((x, i) => {
-                        return (
-                          <img
-                            onClick={() => choosePlayerCard(x.type)}
-                            className='MenuItem'
-                            src={x.image}
-                            key={`player-card-${i}`}
-                          />
-                        )
-                      })
-                    }
-                  </div>
+                  <ChooseCardMenu
+                    clickHandler={choosePlayerCard}
+                    selectedCard={selectedCard}
+                    game={game}
+                  />
+                }
+                {
+                  contextMenuId === tile.topId() &&
+                  <ContextMenu
+                    selectedCard={selectedCard}
+                    game={game}
+                  />
                 }
               </Tile>
             )

@@ -55,7 +55,7 @@ export default class Map {
             const entity = card as EntityObject;
             entity.health = entity.maxHealthPerCell;
 
-            if (short != 'P') { // temp
+            if (!(entity instanceof PlayerCard)) {
               entity.isEnemy = true;
             }
           }

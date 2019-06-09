@@ -1,0 +1,16 @@
+.ContextMenu {
+  color: black;
+  .Button {
+    height: 3vmin;
+    font-size: 2vmin;
+  }
+  .PrimaryButton {
+    color: white;
+    background-color: rgb(86, 132, 231);
+    border-radius: 4px;
+    margin: 2px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

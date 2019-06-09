@@ -40,7 +40,7 @@
 
 .InteractableEnemy {
   &::before {
-    content: '🔪';
+    content: '🗡️';
     width: 50%;
     height: 50%;
     display: flex;
@@ -55,7 +55,7 @@
 .InteractableEnemyNoTarget {
   &::before {
     position: absolute;
-    content: '🔪';
+    content: '🗡️';
     width: 50%;
     height: 50%;
     display: flex;
