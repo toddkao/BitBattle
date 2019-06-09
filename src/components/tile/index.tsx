@@ -51,7 +51,8 @@ const Tile: React.FC<TileProps> = ({
       'InteractableEnemy': tilesInteractableTo === InteractionType.Enemy,
       'InteractableEnemyNoTarget': tilesInteractableTo === InteractionType.EnemyNoTarget,
       'MovableTo': tilesMovableTo,
-      'Enemy': topCard && (topCard.objectType === TileObjectType.Entity) && (topCard as EntityObject).isEnemy
+      'Enemy': topCard && (topCard.objectType === TileObjectType.Entity) && (topCard as EntityObject).isEnemy,
+      'Friendly': topCard && (topCard.objectType === TileObjectType.Entity) && !(topCard as EntityObject).isEnemy
     }
   }
 

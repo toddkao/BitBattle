@@ -15,13 +15,42 @@
   position: relative;
   @include hover;
 
+  &.Friendly {
+    .HealthBar {
+      background-color: red;
+    }
+    &::after {
+      position: absolute;
+      content: '';
+      width: 100%;
+      height: 100%;
+      border: $border-size solid lime;
+      box-sizing: border-box;
+    }
+  }
+
+  &.Enemy {
+    .HealthBar {
+      background-color: red;
+    }
+    &::after {
+      position: absolute;
+      content: '';
+      width: 100%;
+      height: 100%;
+      border: $border-size solid red;
+      box-sizing: border-box;
+    }
+  }
+
   &.Selected {
     &::after {
       position: absolute;
       content: '';
       width: 100%;
       height: 100%;
-      border: 4px solid lime;
+      border: $border-size dashed lime;
+      z-index: 2;
       animation: breathe 1s infinite;
       box-sizing: border-box;
     }
@@ -58,20 +87,6 @@
       content: '⚔️';
       font-size: $small-font;
       opacity: 0.5;
-    }
-  }
-
-  &.Enemy {
-    .HealthBar {
-      background-color: red;
-    }
-    &::after {
-      position: absolute;
-      content: '';
-      width: 100%;
-      height: 100%;
-      border: 4px solid red;
-      box-sizing: border-box;
     }
   }
 
