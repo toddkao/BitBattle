@@ -116,7 +116,8 @@ export default class Map {
     while (damage > 0) {
       let hit = Math.min(damage, defenderCell.health);
       if (hit <= 0) {
-        console.log('zero damage')
+        console.log('hit did 0 damage')
+        console.log(`health = ${defenderCell.health} damage = ${damage}`)
         break;
       }
       defenderCell.health -= hit;

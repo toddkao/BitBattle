@@ -5,7 +5,7 @@ export default {
   menuDirection: (game: Map, card: CardObject): React.CSSProperties => {
     let cssBuilder: React.CSSProperties = {top: '0', left: '100%'};
     if (card) {
-      if (game.width - 2 <= card.x) {
+      if (game.width - 3 <= card.x) {
         if (cssBuilder.left) delete cssBuilder.left;
         cssBuilder = {...cssBuilder, right: '100%'};
       }

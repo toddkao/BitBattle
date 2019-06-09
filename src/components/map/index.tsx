@@ -43,8 +43,9 @@ const Map: React.FC = () => {
   const [selectedCard, updateSelectedCard] = useState();
   const [tilesMovableTo, updateTilesMovableTo] = useState();
   const [tilesInteractableTo, updateTilesInteractableTo] = useState();
-  const [game] = useState(g);
   const [contextMenu, updateContextMenu] = useState();
+
+  const [game] = useState(g);
 
   const clearState = () => {
     updateSelectedCard(undefined);
@@ -70,6 +71,7 @@ const Map: React.FC = () => {
   const leftClick = (e: Event, card: CardObject) => {
     // If we have a card selected, and the new card we're selecting is a movable card,
     // then we're trying to move our selected card to the new card
+
     const selectingCards = isPlayerSelectingCards();
     updateContextMenu(undefined);
 
@@ -124,11 +126,9 @@ const Map: React.FC = () => {
   const choosePlayerCard = (type: any) => {
 
     game.removeCard(selectedCard);
-
     let card: EntityObject = (new type(selectedCard.x, selectedCard.y, game.nextId++)) as EntityObject;
     card.health = card.maxHealthPerCell;
     card.isEnemy = false;
-
     game.getTile(card).addCard(card);
 
     clearState();
@@ -158,7 +158,7 @@ const Map: React.FC = () => {
                 tilesInteractableTo={isInteractableTo(card.top())}
                 selected={isSelected(card.top())}
                 topCard={card.top()}
-                key={`card-${card.x}-${card.y}-${card.topId()}`}
+                key={`card-${card.topId()}`}
                 data={card}
               >
                 {
