@@ -7,8 +7,9 @@
   );
   background-color: initial;
   border: initial;
-  overflow: visible;
+  overflow: auto;
   color: black;
+  height: 300%;
   width: auto;
   .Button {
     font-size: $medium-font;

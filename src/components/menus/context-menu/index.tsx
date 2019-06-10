@@ -27,11 +27,29 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   }
 
   const contextMenuStyles = {
-    ...menuHelper.menuDirection(game, selectedCard),
+    ...menuHelper.menuDirection(game, selectedCard, 1, 2),
   }
 
   return (
     <div onClick={(e) => e.stopPropagation()} className='Menu ContextMenu' style={contextMenuStyles} >
+      <span role="img" aria-label="end" onClick={() => endTurn()} className='Button'>
+        🔚
+      </span>
+      <span role="img" aria-label="defend" onClick={() => endTurn()} className='Button'>
+        🛡️
+      </span>
+      <span role="img" aria-label="bomb" onClick={() => endTurn()} className='Button'>
+        💣
+      </span>
+      <span role="img" aria-label="end" onClick={() => endTurn()} className='Button'>
+        🔚
+      </span>
+      <span role="img" aria-label="defend" onClick={() => endTurn()} className='Button'>
+        🛡️
+      </span>
+      <span role="img" aria-label="bomb" onClick={() => endTurn()} className='Button'>
+        💣
+      </span>
       <span role="img" aria-label="end" onClick={() => endTurn()} className='Button'>
         🔚
       </span>

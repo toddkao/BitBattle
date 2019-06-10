@@ -20,7 +20,7 @@ const ChooseCardMenu: React.FC<ChooseCardMenuProps> = ({
 
   const menuStyles = {
     gridTemplateColumns: `repeat(${4}, 1fr)`,
-    ...menuHelper.menuDirection(game, selectedCard),
+    ...menuHelper.menuDirection(game, selectedCard, 4, 4),
   }
 
   return (
