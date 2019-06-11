@@ -7,7 +7,6 @@ import { CardObjectType } from "../../game/types/card-object-type";
 import helpers from '../../helpers';
 import EntityObject from '../../game/objects/entity-object';
 import PlayerCard from '../../game/cards/utility/player-card';
-import Entities from '../../game/cards/get-entity';
 
 interface TileProps {
   data: TileInstace;
@@ -84,9 +83,9 @@ const Tile: React.FC<TileProps> = ({
       }
       {
         topCard.objectType === CardObjectType.Entity && !(topCard as EntityObject).isEnemy && !(topCard instanceof PlayerCard) &&
-        <div className='TurnOver'>
+        <span role="img" aria-label="Turn over" className='TurnOver'>
           ⌛
-        </div>
+        </span>
       }
       {
         topCard instanceof PlayerCard &&

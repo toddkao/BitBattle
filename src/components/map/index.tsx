@@ -11,7 +11,6 @@ import PlayerCard from '../../game/cards/utility/player-card';
 import Tile from '../tile';
 import ChooseCardMenu from '../menus/choose-card-menu';
 import ContextMenu from '../menus/context-menu';
-import Path from '../../game/path';
 import { Grid, Navigator, NavigatorTile } from 'pulsar-pathfinding';
 
 const boardImport = {

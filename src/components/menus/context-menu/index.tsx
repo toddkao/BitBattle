@@ -1,11 +1,9 @@
 import React from 'react';
 import menuHelper from '../menu-helper';
 import Map from '../../../game/map';
-import Path from "../../../game/path";
 import CardObject from '../../../game/interfaces/card';
 import './context-menu.scss';
 import '../menu.scss';
-import Point from "../../../game/interfaces/point";
 
 interface ContextMenuProps {
   selectedCard: CardObject,

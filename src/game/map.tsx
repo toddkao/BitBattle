@@ -65,7 +65,7 @@ export default class Map {
   }
 
   isTerrain(p: Point) : boolean {
-    return this.getTile(p).objects.some(t => t.objectType == CardObjectType.Terrain);
+    return this.getTile(p).objects.some(t => t.objectType === CardObjectType.Terrain);
   }
 
   isValidPoint(p: Point): boolean {
