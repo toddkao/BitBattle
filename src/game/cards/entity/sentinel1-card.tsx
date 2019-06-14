@@ -11,9 +11,4 @@ export default class Sentinel1Card extends SpybotEnemyObject {
     this.attackDamage = 2;
     this.attackRange = 1;
   }
-
-  getMovable(): Point[] {
-    return this.getDiagonalPoints();
-  }
-
 }

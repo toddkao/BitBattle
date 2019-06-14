@@ -18,7 +18,8 @@ export default class EntityObject implements CardObject {
   protected _maxCells: number;
   get maxCells() { return this._maxCells; }
 
-  maxMovePerTurn: number;
+  maxActionsPerTurn: number;
+  actionsTaken: number;
 
   isEnemy: boolean;
   tileImage: string;
@@ -27,7 +28,8 @@ export default class EntityObject implements CardObject {
   constructor(x: number, y: number, id: number) {
     this._maxHealthPerCell = 1;
     this._maxCells = 1;
-    this.maxMovePerTurn = 1;
+    this.maxActionsPerTurn = 1;
+    this.actionsTaken = 0;
     this.attackDamage = 1;
     this.health = 0;
     this.children = [];

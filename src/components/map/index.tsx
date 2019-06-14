@@ -11,31 +11,29 @@ import PlayerCard from '../../game/cards/utility/player-card';
 import Tile from '../tile';
 import ChooseCardMenu from '../menus/choose-card-menu';
 import ContextMenu from '../menus/context-menu';
-import { Grid, Navigator, NavigatorTile } from 'pulsar-pathfinding';
+import { Grid, Navigator, NavigatorTile, Entity } from 'pulsar-pathfinding';
 
 const boardImport = {
   "comment": "https://www.youtube.com/watch?v=HNJA0wfbGfE&list=PL56CE84F6287C82A8&index=10",
   "tiles": [
     "XX XX XX XX XX XX XX XX XX XX XX XX XX XX",
-    "AP XX AP XX XX XX XX XX XX XX XX XX XX XX",
-    "XX S1 XX XX XX XX XX XX XX PP XX XX XX XX",
-    "XX XX XX S1 XX XX XX XX XX XX XX XX XX XX",
-    "OO XX WM XX XX XX XX XX XX XX XX XX XX XX",
-    "OO OO XX AP XX XX XX XX XX XX XX XX XX XX",
-    "OO OO XX S1 XX S1 XX XX XX XX XX XX XX XX",
-    "OO XX WM XX S1 XX AP XX XX S1 XX XX XX XX",
-    "AP XX XX XX XX XX XX XX WM XX S1 XX XX XX",
-    "XX XX AP WM OO OO OO XX XX XX XX AP XX AP",
-    "AP XX XX OO OO OO OO OO XX AP XX XX XX XX"
+    "XX XX XX XX XX XX XX XX XX XX XX XX XX XX",
+    "XX XX XX XX XX XX XX XX XX P1 P1 XX XX XX",
+    "XX XX XX XX XX XX XX XX XX XX XX XX XX XX",
+    "OO XX XX XX XX XX XX XX XX XX XX XX XX XX",
+    "OO OO XX XX XX XX XX XX XX XX XX XX XX XX",
+    "OO OO XX XX P2 XX XX XX XX XX XX XX XX XX",
+    "OO XX XX XX P2 XX XX XX XX XX XX XX XX XX",
+    "XX XX XX XX XX XX XX XX XX XX XX XX XX XX",
+    "XX XX XX XX OO OO OO XX XX XX XX XX XX XX",
+    "XX XX XX OO OO OO OO OO XX XX XX XX XX XX"
   ],
   "mapping": {
     "*": "BrickCard",
     "XX": "BrickCard",
     "OO": "GrassCard",
-    "PP": "PlayerCard",
-    "AP": "GuardPupCard",
-    "WM": "Watchman1Card",
-    "S1": "Sentinel1Card"
+    "P1": "PlayerCard",
+    "P2": "Player2Card",
   }
 }
 
@@ -61,13 +59,34 @@ const Map: React.FC = () => {
     const selectingCards = isPlayerSelectingCards();
     if (!selectingCards) {
       if (selectedCard) clearState();
-      updateContextMenu({id: card.id, card: card});
+      updateContextMenu({ id: card.id, card: card });
     }
   }
 
   const isPlayerSelectingCards = (): boolean => {
     if (game.tiles.some(t => t.objects.some(o => o instanceof PlayerCard))) return true;
     return false;
+  }
+
+
+  const getMyEntities = (): EntityObject[] => {
+    let entities: EntityObject[] | undefined = game.tiles
+      .map(t =>
+        t.objects
+          .filter(o => o.objectType == CardObjectType.Entity)
+          .map(o => o as EntityObject)
+          .filter(o => o.isEnemy == game.isEnemyTurn)
+      )
+      .reduce((a, v) => a.concat(v), []);
+
+    return entities ? entities : [];
+  }
+
+  const isTurnOver = (): boolean => {
+    let over: boolean | undefined = getMyEntities()
+      .every(o => o.actionsTaken >= o.maxActionsPerTurn);
+
+    return over ? true : false;
   }
 
   const leftClick = (e: Event, card: CardObject) => {
@@ -78,13 +97,34 @@ const Map: React.FC = () => {
     updateContextMenu(undefined);
 
     if (selectedCard && !selectingCards) {
-      if (tilesInteractableTo && tilesInteractableTo.some((t: Point) => t.x === card.x && t.y === card.y) && helpers.isEnemy(card)) {
-        game.interact(selectedCard, card);
-        clearState();
-      } else if (tilesMovableTo && tilesMovableTo.some((t: Point) => t.x === card.x && t.y === card.y))  {
-        game.move(selectedCard, card);
-        clearState();
+
+      if (selectedCard.objectType == CardObjectType.Entity) {
+
+        const selectedEntity = selectedCard as EntityObject;
+
+        if (selectedEntity.isEnemy != game.isEnemyTurn) return;
+
+        if (selectedEntity.actionsTaken < selectedEntity.maxActionsPerTurn) {
+
+          if (card.objectType == CardObjectType.Terrain && tilesMovableTo && tilesMovableTo.some((t: Point) => t.x === card.x && t.y === card.y)) {
+            game.move(selectedCard, card);
+            clearState();
+          }
+          else if (tilesInteractableTo && tilesInteractableTo.some((t: Point) => t.x === card.x && t.y === card.y) && selectedCard.isEnemy != helpers.isEnemy(card)) {
+            game.interact(selectedCard, card);
+            clearState();
+          }
+
+          if (isTurnOver()) {
+            console.log('change turns');
+            game.isEnemyTurn = !game.isEnemyTurn;
+            getMyEntities().forEach(e => e.actionsTaken = 0);
+          }
+
+        }
+
       }
+
     } else if (!isSelected(card) && card.objectType === CardObjectType.Entity /* && !helpers.isEnemy(card) */) {
       updateSelectedCard(card);
 
@@ -123,7 +163,9 @@ const Map: React.FC = () => {
     if (!tilesInteractableTo) return InteractionType.None;
     if (!card) return InteractionType.None;
     if (tilesInteractableTo.some((t: Point) => t.x === card.x && t.y === card.y)) {
-      if (helpers.isEnemy(card)) {
+      if (card.objectType === CardObjectType.Terrain) {
+        return InteractionType.EnemyNoTarget;
+      } else if (selectedCard && helpers.isEnemy(selectedCard) != helpers.isEnemy(card)) {
         return InteractionType.Enemy;
       } else {
         return InteractionType.EnemyNoTarget;
@@ -133,11 +175,11 @@ const Map: React.FC = () => {
   }
 
   const choosePlayerCard = (type: any) => {
-
-    game.removeCard(selectedCard);
     let card: EntityObject = (new type(selectedCard.x, selectedCard.y, game.nextId++)) as EntityObject;
     card.health = card.maxHealthPerCell;
-    card.isEnemy = false;
+
+    card.isEnemy = selectedCard.isEnemy;
+    game.removeCard(selectedCard);
     game.getTile(card).addCard(card);
 
     clearState();
@@ -155,22 +197,30 @@ const Map: React.FC = () => {
   }
 
   const getPath = () => {
-    const grid: Grid = new Grid({width: game.width, height: game.height});
+    const grid: Grid = new Grid({ width: game.width, height: game.height });
     grid.makeGrid();
     for (let y = 0; y < game.height; y++) {
       for (let x = 0; x < game.width; x++) {
-        if (!game.isOverlappable(selectedCard, {x, y})) {
+        if (!game.isOverlappable(selectedCard, { x, y })) {
           // @ts-ignore
-          let gg = grid.findTile({x, y});
+          let gg = grid.findTile({ x, y });
           if (gg) grid.obstacles.add(gg);
         }
       }
     }
     // @ts-ignore
-    const begin: NavigatorTile = grid.findTile({x: 0, y: 9});
+    const begin: NavigatorTile = grid.findTile({ x: 0, y: 9 });
     // @ts-ignore
-    const end: NavigatorTile = grid.findTile({x: 0, y: 3});
-    const navigator: Navigator = new Navigator({grid, begin, end});
+    const end: NavigatorTile = grid.findTile({ x: 0, y: 3 });
+    const navigator: Navigator = new Navigator({
+      grid, begin, end,
+      onExplore: (x) => {
+        console.log(x)
+      },
+      onComplete: (x) => {
+        console.log(x)
+      },
+    });
     navigator.start();
 
     //     if (short.find(t => t.x === x && t.y === y)) {
@@ -183,6 +233,7 @@ const Map: React.FC = () => {
     // let finder = new pf.BiDijkstraFinder({ allowDiagonal: true, dontCrossCorners: false});
 
     // let path = finder.findPath(0,9, 0,3, grid).map((c: any) => ({ x: c[0], y: c[1]}));
+    console.log(navigator);
     let points = navigator.path.map(tile => tile.position);
     // let test = p.search({ x: 0, y: 9 }, { x: 0, y: 3 }, (p: Point) => game.isValidPoint(p) && game.isOverlappable(selectedCard, p), path);
     updateTilesInPath(points);

@@ -54,7 +54,8 @@ const Tile: React.FC<TileProps> = ({
       'MovableTo': isMovable,
       'Enemy': topCard && (topCard.objectType === CardObjectType.Entity) && (topCard as EntityObject).isEnemy,
       'Friendly': topCard && (topCard.objectType === CardObjectType.Entity) && !(topCard as EntityObject).isEnemy,
-      'Choosing': topCard instanceof PlayerCard
+      'Choosing': topCard instanceof PlayerCard,
+      'TurnOver': turnOver
     }
   }
 
@@ -69,6 +70,10 @@ const Tile: React.FC<TileProps> = ({
     }
   }
 
+  const topEntity = (topCard.objectType == CardObjectType.Entity) ? (topCard as EntityObject) : null;
+
+  const turnOver = topEntity && topEntity.actionsTaken >= topEntity.maxActionsPerTurn;
+
   return (
     <div
       className={helpers.ObjectToClass(tileClass())}
@@ -82,8 +87,8 @@ const Tile: React.FC<TileProps> = ({
         </div>
       }
       {
-        topCard.objectType === CardObjectType.Entity && !(topCard as EntityObject).isEnemy && !(topCard instanceof PlayerCard) &&
-        <span role="img" aria-label="Turn over" className='TurnOver'>
+        turnOver &&
+        <span role="img" aria-label="Turn over" className='Hourglass'>
           ⌛
         </span>
       }

@@ -16,9 +16,12 @@ export default class Map {
   width: number;
   height: number;
   nextId: number;
+  isEnemyTurn: boolean;
 
   constructor(b: Board) {
     this.nextId = 1;
+    this.isEnemyTurn = false;
+
     const cards = [...cardList, ...objectList];
     console.log(cards);
 
@@ -64,7 +67,7 @@ export default class Map {
     }
   }
 
-  isTerrain(p: Point) : boolean {
+  isTerrain(p: Point): boolean {
     return this.getTile(p).objects.some(t => t.objectType === CardObjectType.Terrain);
   }
 
@@ -94,6 +97,8 @@ export default class Map {
   }
 
   move(o: EntityObject, p: Point) {
+    o.actionsTaken++;
+
     p = { x: p.x, y: p.y };
     this.getTile(o).removeCard(o.id);
     o.move(this, p);
@@ -115,13 +120,13 @@ export default class Map {
   }
 
   private attack(attacker: EntityObject, defender: EntityObject) {
+    attacker.actionsTaken++;
+
     let damage = attacker.attackDamage;
     let defenderCell = defender.getHealthCard();
     while (damage > 0) {
       let hit = Math.min(damage, defenderCell.health);
       if (hit <= 0) {
-        console.log('hit did 0 damage')
-        console.log(`health = ${defenderCell.health} damage = ${damage}`)
         break;
       }
       defenderCell.health -= hit;

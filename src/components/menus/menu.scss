@@ -3,7 +3,7 @@
   position: absolute;
   z-index: 9;
   width: 200%;
-  height: 400%;
+  max-height: 400%;
   background-color: white;
   border: 3px solid black;
   overflow: auto;
