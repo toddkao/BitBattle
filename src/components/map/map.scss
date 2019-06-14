@@ -2,7 +2,7 @@
 
 .MapContainer {
   @include flex;
-  height: -webkit-fill-available;
+  height: 100vh;
 }
 
 .Map {
