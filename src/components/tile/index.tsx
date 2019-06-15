@@ -7,9 +7,10 @@ import { CardObjectType } from "../../game/types/card-object-type";
 import helpers from '../../helpers';
 import EntityObject from '../../game/objects/entity-object';
 import PlayerCard from '../../game/cards/utility/player-card';
+import Map from '../../game/map';
 
 interface TileProps {
-  data: TileInstace;
+  game: Map;
   selected: boolean;
   isInteractable: InteractionType;
   isMovable: boolean;
@@ -20,7 +21,7 @@ interface TileProps {
 }
 
 const Tile: React.FC<TileProps> = ({
-  data,
+  game,
   selected,
   leftClickHandler,
   rightClickHandler,
@@ -72,7 +73,7 @@ const Tile: React.FC<TileProps> = ({
 
   const topEntity = (topCard.objectType == CardObjectType.Entity) ? (topCard as EntityObject) : null;
 
-  const turnOver = topEntity && topEntity.actionsTaken >= topEntity.maxActionsPerTurn;
+  const turnOver = topEntity && (topEntity.actionsTaken >= topEntity.maxActionsPerTurn || topEntity.isEnemy != game.isEnemyTurn);
 
   return (
     <div
@@ -87,9 +88,13 @@ const Tile: React.FC<TileProps> = ({
         </div>
       }
       {
-        turnOver &&
+        turnOver ?
         <span role="img" aria-label="Turn over" className='Hourglass'>
           ⌛
+        </span>
+        : topEntity &&
+        <span role="img" aria-label="Turn over" className='TurnsLeft'>
+          { topEntity.maxActionsPerTurn - topEntity.actionsTaken}
         </span>
       }
       {

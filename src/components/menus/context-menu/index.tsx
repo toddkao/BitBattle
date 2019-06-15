@@ -20,7 +20,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 }) => {
 
   const endTurn = () => {
-    getPath();
+    console.log('end turn')
+    game.endTurn();
     clearState();
   }
 
@@ -35,27 +36,6 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       </span>
       <span role="img" aria-label="defend" onClick={() => endTurn()} className='Button'>
         🛡️
-      </span>
-      <span role="img" aria-label="bomb" onClick={() => endTurn()} className='Button'>
-        💣
-      </span>
-      <span role="img" aria-label="end" onClick={() => endTurn()} className='Button'>
-        🔚
-      </span>
-      <span role="img" aria-label="defend" onClick={() => endTurn()} className='Button'>
-        🛡️
-      </span>
-      <span role="img" aria-label="bomb" onClick={() => endTurn()} className='Button'>
-        💣
-      </span>
-      <span role="img" aria-label="end" onClick={() => endTurn()} className='Button'>
-        🔚
-      </span>
-      <span role="img" aria-label="defend" onClick={() => endTurn()} className='Button'>
-        🛡️
-      </span>
-      <span role="img" aria-label="bomb" onClick={() => endTurn()} className='Button'>
-        💣
       </span>
     </div>
   )

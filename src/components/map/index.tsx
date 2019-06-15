@@ -12,6 +12,7 @@ import Tile from '../tile';
 import ChooseCardMenu from '../menus/choose-card-menu';
 import ContextMenu from '../menus/context-menu';
 import { Grid, Navigator, NavigatorTile, Entity } from 'pulsar-pathfinding';
+import HealthCard from '../../game/cards/utility/health-card';
 
 const boardImport = {
   "comment": "https://www.youtube.com/watch?v=HNJA0wfbGfE&list=PL56CE84F6287C82A8&index=10",
@@ -68,27 +69,6 @@ const Map: React.FC = () => {
     return false;
   }
 
-
-  const getMyEntities = (): EntityObject[] => {
-    let entities: EntityObject[] | undefined = game.tiles
-      .map(t =>
-        t.objects
-          .filter(o => o.objectType == CardObjectType.Entity)
-          .map(o => o as EntityObject)
-          .filter(o => o.isEnemy == game.isEnemyTurn)
-      )
-      .reduce((a, v) => a.concat(v), []);
-
-    return entities ? entities : [];
-  }
-
-  const isTurnOver = (): boolean => {
-    let over: boolean | undefined = getMyEntities()
-      .every(o => o.actionsTaken >= o.maxActionsPerTurn);
-
-    return over ? true : false;
-  }
-
   const leftClick = (e: Event, card: CardObject) => {
     // If we have a card selected, and the new card we're selecting is a movable card,
     // then we're trying to move our selected card to the new card
@@ -115,10 +95,8 @@ const Map: React.FC = () => {
             clearState();
           }
 
-          if (isTurnOver()) {
-            console.log('change turns');
-            game.isEnemyTurn = !game.isEnemyTurn;
-            getMyEntities().forEach(e => e.actionsTaken = 0);
+          if (game.isTurnOver()) {
+            game.endTurn();
           }
 
         }
@@ -179,6 +157,7 @@ const Map: React.FC = () => {
     card.health = card.maxHealthPerCell;
 
     card.isEnemy = selectedCard.isEnemy;
+    card.healthCard = HealthCard;
     game.removeCard(selectedCard);
     game.getTile(card).addCard(card);
 
@@ -254,7 +233,7 @@ const Map: React.FC = () => {
                 selected={isSelected(card.top())}
                 topCard={card.top()}
                 key={`card-${card.topId()}`}
-                data={card}
+                game={game}
               >
                 {
                   isSelected(card.top()) && (selectedCard instanceof PlayerCard) &&

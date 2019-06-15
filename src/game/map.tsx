@@ -10,6 +10,7 @@ import helpers from '../helpers';
 
 import cardList from './cards/get-all';
 import objectList from './objects/get-all';
+import HealthCard from './cards/utility/health-card';
 
 export default class Map {
   tiles: Tile[];
@@ -53,6 +54,7 @@ export default class Map {
           if (card.objectType === CardObjectType.Entity) {
             const entity = card as EntityObject;
             entity.health = entity.maxHealthPerCell;
+            entity.healthCard = HealthCard;
 
             if (!(entity instanceof PlayerCard)) {
               entity.isEnemy = true;
@@ -94,6 +96,30 @@ export default class Map {
   private tilePointToIndex(p: Point): number {
     if (!this.isValidPoint(p)) throw new Error(`Point(${p.x}, ${p.y}) is out of bounds`);
     return (p.y * this.width) + p.x;
+  }
+
+  endTurn() {
+    this.isEnemyTurn = !this.isEnemyTurn;
+    this.getEntities(this.isEnemyTurn).forEach(e => e.actionsTaken = 0);
+  }
+
+  isTurnOver(): boolean {
+    let over: boolean | undefined = this.getEntities(this.isEnemyTurn)
+      .every(o => o.actionsTaken >= o.maxActionsPerTurn);
+    return over ? true : false;
+  }
+
+  getEntities(enemy: boolean): EntityObject[] {
+    let entities: EntityObject[] | undefined = this.tiles
+      .map(t =>
+        t.objects
+          .filter(o => o.objectType == CardObjectType.Entity)
+          .map(o => o as EntityObject)
+          .filter(o => o.isEnemy == enemy)
+      )
+      .reduce((a, v) => a.concat(v), []);
+
+    return entities ? entities : [];
   }
 
   move(o: EntityObject, p: Point) {

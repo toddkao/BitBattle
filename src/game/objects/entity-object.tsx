@@ -1,7 +1,6 @@
 import Point from '../interfaces/point';
 import Map from "../map";
 import CardObject from "../interfaces/card";
-//import HealthCard from "./health-card";
 import { CardObjectType } from '../types/card-object-type';
 
 export default class EntityObject implements CardObject {
@@ -11,6 +10,7 @@ export default class EntityObject implements CardObject {
   health: number;
   attackDamage: number;
   children: EntityObject[];
+  healthCard: any;
 
   protected _maxHealthPerCell: number;
   get maxHealthPerCell() { return this._maxHealthPerCell; }
@@ -58,13 +58,13 @@ export default class EntityObject implements CardObject {
   getInteractable(): Point[] { return []; }
 
   move(g: Map, p: Point): void {
-    if ((this.children.length + 1) < this.maxCells) {
-      //const child = new HealthCard(this.x, this.y, g.nextId++, this);
-      //child.health = this.maxHealthPerCell;
-      //child.isEnemy = this.isEnemy;
+    if (this.healthCard && (this.children.length + 1) < this.maxCells) {
+      const child = new this.healthCard(this.x, this.y, g.nextId++, this);
+      child.health = this.maxHealthPerCell;
+      child.isEnemy = this.isEnemy;
 
-      //this.children.push(child);
-      //g.move(child, this.getHealthCard());
+      this.children.push(child);
+      g.move(child, this.getHealthCard());
     }
 
     for (let i = this.children.length - 1; i >= 0; i--) {
